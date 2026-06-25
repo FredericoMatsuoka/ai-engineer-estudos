@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Engineer — Plano de Estudos</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--accent:#00d4aa;--accent2:#00a88a;
+  --text:#e8eaf0;--muted:#8892a4;--border:#2a2e3e;--danger:#e05c5c;--warn:#f0a500;--pass:#00d4aa;
+  --font:'Segoe UI',system-ui,sans-serif;--mono:'Cascadia Code','Fira Code',monospace
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex}
+#sidebar{width:260px;min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;overflow-y:auto;z-index:100}
+#sidebar-header{padding:20px;border-bottom:1px solid var(--border)}
+#sidebar-header h1{font-size:15px;font-weight:700;color:var(--accent);font-family:var(--mono);letter-spacing:1px}
+#sidebar-header p{font-size:11px;color:var(--muted);margin-top:4px}
+.global-progress{padding:16px 20px;border-bottom:1px solid var(--border)}
+.global-progress label{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:6px}
+.pbar{background:var(--surface2);border-radius:4px;height:6px;overflow:hidden}
+.pbar-fill{background:var(--accent);height:100%;border-radius:4px;transition:width .4s}
+#nav{flex:1;padding:12px 0}
+.nav-module{margin-bottom:2px}
+.nav-module-btn{width:100%;background:none;border:none;color:var(--muted);padding:10px 20px;text-align:left;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;transition:all .2s;font-family:var(--font)}
+.nav-module-btn:hover,.nav-module-btn.active{background:var(--surface2);color:var(--text)}
+.nav-module-btn .mod-icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.nav-module-btn .mod-pct{margin-left:auto;font-size:10px;color:var(--accent)}
+.nav-module-btn.done .mod-icon{background:var(--accent);color:#000}
+#sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted)}
+#main{margin-left:260px;flex:1;padding:32px;max-width:900px}
+.view{display:none}
+.view.active{display:block}
+.dash-title{font-size:22px;font-weight:700;margin-bottom:4px}
+.dash-sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.stat-card .val{font-size:26px;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.stat-card .lbl{font-size:12px;color:var(--muted);margin-top:4px}
+.section-title{font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+.modules-overview{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.mod-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;cursor:pointer;transition:border-color .2s}
+.mod-card:hover{border-color:var(--accent)}
+.mod-card h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.mod-card .meta{font-size:12px;color:var(--muted);margin-bottom:10px}
+.mod-card .pbar{margin-top:8px}
+.mod-card .pct{font-size:12px;color:var(--accent);margin-top:4px;text-align:right}
+.calendar-grid{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:28px}
+.cal-day{width:14px;height:14px;border-radius:2px;background:var(--surface2)}
+.cal-day.studied{background:var(--accent)}
+.cal-day.today{outline:2px solid var(--accent)}
+.mod-header{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+.mod-header h2{font-size:20px;font-weight:700;margin-bottom:6px}
+.mod-header .meta{color:var(--muted);font-size:13px;margin-bottom:14px}
+.lessons-list{display:flex;flex-direction:column;gap:8px}
+.lesson-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;display:flex;align-items:flex-start;gap:14px;transition:border-color .2s}
+.lesson-item:hover{border-color:var(--accent)}
+.lesson-item.done{border-color:var(--accent)33;opacity:.75}
+.lesson-cb{width:20px;height:20px;border:2px solid var(--border);border-radius:4px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .2s}
+.lesson-cb.checked{background:var(--accent);border-color:var(--accent)}
+.lesson-cb.checked::after{content:'✓';font-size:11px;color:#000;font-weight:700}
+.lesson-info{flex:1}
+.lesson-title{font-size:14px;font-weight:600;margin-bottom:2px}
+.lesson-sub{font-size:12px;color:var(--muted)}
+.lesson-tags{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.tag{font-size:10px;padding:2px 7px;border-radius:3px;font-family:var(--mono)}
+.tag.en{background:#1a2744;color:#6ab0f5}
+.tag.ex{background:#1a2a1a;color:var(--accent)}
+.lesson-toggle{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:4px 10px;border-radius:4px;cursor:pointer;flex-shrink:0;font-family:var(--font)}
+.lesson-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.lesson-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.lesson-detail.open{display:block}
+.lesson-detail h4{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.lesson-detail p{font-size:13px;line-height:1.7;color:var(--text);margin-bottom:10px}
+.code-block{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:var(--mono);font-size:12px;color:#a8d8a8;overflow-x:auto;margin-bottom:10px;white-space:pre}
+.glossary{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.glos-item{display:flex;gap:8px;font-size:12px}
+.glos-en{color:#6ab0f5;font-family:var(--mono);min-width:120px}
+.glos-pt{color:var(--text)}
+.exercise-box{background:#0d1f1a;border:1px solid var(--accent)44;border-radius:6px;padding:12px;font-size:13px}
+.exercise-box strong{color:var(--accent);display:block;margin-bottom:4px}
+.exam-container{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px}
+.exam-container h2{font-size:18px;font-weight:700;margin-bottom:6px}
+.exam-container p.sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+.question-block{margin-bottom:20px}
+.question-block p{font-size:14px;font-weight:600;margin-bottom:10px;line-height:1.5}
+.options{display:flex;flex-direction:column;gap:6px}
+.option-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:6px;cursor:pointer;text-align:left;font-size:13px;font-family:var(--font);transition:all .2s}
+.option-btn:hover:not(:disabled){border-color:var(--accent);background:#0d2420}
+.option-btn.selected{border-color:var(--accent);background:#0d2420}
+.option-btn.correct{border-color:var(--pass);background:#0d2420;color:var(--pass)}
+.option-btn.wrong{border-color:var(--danger);background:#2a0d0d;color:var(--danger)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:var(--font);transition:all .2s}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent2)}
+.btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.exam-result{text-align:center;padding:20px}
+.exam-result .score{font-size:56px;font-weight:700;font-family:var(--mono);margin-bottom:8px}
+.exam-result .score.pass{color:var(--pass)}
+.exam-result .score.fail{color:var(--danger)}
+.exam-result p{color:var(--muted);margin-bottom:20px}
+.history-list{display:flex;flex-direction:column;gap:8px}
+.history-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;display:flex;align-items:center;gap:14px}
+.history-badge{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:var(--mono);flex-shrink:0}
+.history-badge.pass{background:#0d2420;color:var(--pass)}
+.history-badge.fail{background:#2a0d0d;color:var(--danger)}
+.history-info{flex:1}
+.history-info h4{font-size:14px;font-weight:600}
+.history-info p{font-size:12px;color:var(--muted);margin-top:2px}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:12px 18px;font-size:13px;color:var(--accent);z-index:999;animation:fadeIn .3s;pointer-events:none}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* Mobile hamburger button */
+#menu-toggle{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--surface);border:1px solid var(--border);color:var(--accent);width:36px;height:36px;border-radius:6px;cursor:pointer;font-size:18px;align-items:center;justify-content:center}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:#0008;z-index:99}
+@media(max-width:700px){
+  #menu-toggle{display:flex}
+  #sidebar{width:260px;transform:translateX(-100%);transition:transform .25s}
+  #sidebar.open{transform:translateX(0)}
+  #sidebar-overlay.open{display:block}
+  #main{margin-left:0;padding:16px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .modules-overview{grid-template-columns:1fr}
+  .lesson-item{flex-wrap:wrap}
+  .lesson-toggle{margin-top:6px}
+  #main{padding-top:56px}
+}
+</style>
+</head>
+<body>
+
+<button id="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>&gt; AI_ENGINEER</h1>
+    <p>Plano de estudos · 1h/dia</p>
+  </div>
+  <div class="global-progress">
+    <label><span>Progresso geral</span><span id="global-pct">0%</span></label>
+    <div class="pbar"><div class="pbar-fill" id="global-bar" style="width:0%"></div></div>
+  </div>
+  <div id="nav">
+    <div class="nav-module">
+      <button class="nav-module-btn active" onclick="showView('dashboard');if(window.innerWidth<=700)toggleSidebar()">
+        <span class="mod-icon" style="background:#1a2a1a">📊</span>
+        <span>Dashboard</span>
+      </button>
+    </div>
+    <div id="mod-nav"></div>
+    <div class="nav-module" style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">
+      <button class="nav-module-btn" onclick="showView('history');if(window.innerWidth<=700)toggleSidebar()">
+        <span class="mod-icon" style="background:#1a1a2a">📋</span>
+        <span>Histórico de provas</span>
+      </button>
+    </div>
+  </div>
+  <div id="sidebar-footer">
+    <div id="streak-display">🔥 Sequência: <strong id="streak-val">0</strong> dias</div>
+    <div style="margin-top:6px">⏱ Total: <strong id="hours-val">0h</strong></div>
+    <div style="margin-top:10px;background:#0d2420;border:1px solid var(--accent)44;border-radius:6px;padding:8px 10px">
+      <div style="font-size:10px;color:var(--accent);margin-bottom:6px;font-weight:600">💾 BACKUP DO PROGRESSO</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-primary" style="padding:5px 10px;font-size:11px;flex:1" onclick="exportData()">⬇ Exportar</button>
+        <label class="btn btn-secondary" style="padding:5px 10px;font-size:11px;cursor:pointer;flex:1;justify-content:center">⬆ Importar<input type="file" accept=".json" style="display:none" onchange="importData(event)"></label>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:6px">Limpar o cache apaga tudo. Exporte sempre!</div>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+  <div id="view-dashboard" class="view active">
+    <div class="dash-title">Bem-vindo de volta! 👋</div>
+    <div class="dash-sub" id="dash-sub">Continue de onde parou e mantenha a sequência.</div>
+    <div id="continue-btn-area" style="margin-bottom:20px"></div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="val" id="s-done">0</div><div class="lbl">Aulas concluídas</div></div>
+      <div class="stat-card"><div class="val" id="s-total">0</div><div class="lbl">Total de aulas</div></div>
+      <div class="stat-card"><div class="val" id="s-streak">0🔥</div><div class="lbl">Dias seguidos</div></div>
+      <div class="stat-card"><div class="val" id="s-hours">0h</div><div class="lbl">Horas estudadas</div></div>
+    </div>
+    <div class="section-title">Módulos</div>
+    <div class="modules-overview" id="modules-overview"></div>
+    <div class="section-title">Últimos 60 dias</div>
+    <div class="calendar-grid" id="cal-grid"></div>
+  </div>
+
+  <div id="view-module" class="view">
+    <div id="module-content"></div>
+  </div>
+
+  <div id="view-exam" class="view">
+    <div id="exam-content"></div>
+  </div>
+
+  <div id="view-history" class="view">
+    <div class="dash-title">Histórico de provas</div>
+    <div class="dash-sub" style="margin-bottom:20px">Todas as provas realizadas e suas notas.</div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+</main>
+
+<script>
+const CURRICULUM = [
+  {
+    id:'m1',color:'#1a2a1a',emoji:'🐍',
+    title:'Python Fundamentos',titleEn:'Python Fundamentals',weeks:6,
+    desc:'A base de tudo. Python é a língua franca da IA — você vai dominar desde variáveis até orientação a objetos.',
+    lessons:[
+      {id:'m1l1',title:'Variáveis e tipos de dados',en:'Variables & Data Types',
+       content:'Em Python, você não precisa declarar o tipo da variável — o interpretador descobre sozinho (tipagem dinâmica / dynamic typing). Os tipos mais usados são: int (inteiro), float (decimal), str (texto), bool (verdadeiro/falso). A atribuição usa o sinal =. Você pode usar type() para descobrir o tipo de qualquer valor. Entender tipos é fundamental porque erros de tipo (TypeError) são dos mais comuns em código Python. Cada tipo tem comportamentos diferentes: strings podem ser concatenadas com +, inteiros podem ser somados, booleanos controlam o fluxo lógico. Preste atenção na diferença entre = (atribuição) e == (comparação).',
+       code:'# Variáveis — Variables\nnome = "Frederico"      # str (texto / text)\nidade = 28             # int (inteiro / integer)\naltura = 1.80          # float (decimal)\nativo = True           # bool (verdadeiro / true)\n\nprint(type(nome))      # <class \'str\'>\nprint(type(idade))     # <class \'int\'>\n\n# Conversão de tipos — Type casting\nidade_texto = str(idade)   # "28"\nnota = float("9.5")        # 9.5',
+       glossary:[['variable','variável'],['integer','inteiro'],['string','texto / cadeia de caracteres'],['boolean','booleano (verdadeiro/falso)'],['type casting','conversão de tipo'],['dynamic typing','tipagem dinâmica'],['assignment','atribuição']],
+       exercise:'Crie variáveis para armazenar: seu nome, sua idade, sua altura e se você já estudou Python antes. Imprima cada uma com print() e use type() para verificar os tipos.'},
+      {id:'m1l2',title:'Operadores e expressões',en:'Operators & Expressions',
+       content:'Operadores são símbolos que realizam operações entre valores. Aritméticos: + (soma), - (subtração), * (multiplicação), / (divisão), // (divisão inteira), % (módulo/resto), ** (potência). Comparação: ==, !=, >, <, >=, <=. Lógicos: and, or, not. Python segue a ordem matemática (PEMDAS): parênteses primeiro, depois potências, multiplicação/divisão, adição/subtração. O operador % (módulo) é muito útil para saber se um número é par (n % 2 == 0). Expressões retornam um valor — você pode usá-las dentro de print() ou atribuir a variáveis.',
+       code:'# Aritméticos — Arithmetic\nprint(10 + 3)   # 13\nprint(10 / 3)   # 3.333...\nprint(10 // 3)  # 3 (divisão inteira / floor division)\nprint(10 % 3)   # 1 (resto / remainder)\nprint(2 ** 8)   # 256 (potência / power)\n\n# Comparação — Comparison\nprint(10 > 5)   # True\nprint(10 == 10) # True\n\n# Lógicos — Logical\nprint(True and False)  # False\nprint(True or False)   # True\nprint(not True)        # False',
+       glossary:[['operator','operador'],['expression','expressão'],['modulo','módulo / resto da divisão'],['floor division','divisão inteira'],['exponentiation','potenciação'],['comparison','comparação'],['logical operator','operador lógico']],
+       exercise:'Escreva um programa que calcule: 1) a área de um retângulo (base=7, altura=4), 2) se um número é par usando %, 3) a potência 2^10.'},
+      {id:'m1l3',title:'Condicionais: if, elif, else',en:'Conditionals',
+       content:'Condicionais permitem que seu programa tome decisões. A estrutura básica é if (se) → elif (senão se) → else (senão). Python usa indentação (4 espaços) para definir blocos de código — não usa chaves {} como C ou Java. Isso é crítico: erro de indentação (IndentationError) é muito comum para iniciantes. Você pode aninhar condicionais (nested conditionals), mas evite mais de 2 níveis. O operador ternário permite escrever condicionais em uma linha: valor = "par" if n % 2 == 0 else "ímpar".',
+       code:'nota = 75\n\nif nota >= 90:\n    print("Aprovado com louvor")\nelif nota >= 70:\n    print("Aprovado")\nelif nota >= 50:\n    print("Recuperação")\nelse:\n    print("Reprovado")\n\n# Ternário — Ternary operator\nresultado = "par" if nota % 2 == 0 else "ímpar"\nprint(f"A nota {nota} é {resultado}")',
+       glossary:[['conditional','condicional'],['indentation','indentação'],['nested','aninhado'],['ternary operator','operador ternário'],['block','bloco de código'],['boolean expression','expressão booleana']],
+       exercise:'Crie um programa que receba uma temperatura e diga: abaixo de 15°C = "frio", 15-25 = "agradável", 25-35 = "quente", acima de 35 = "muito quente".'},
+      {id:'m1l4',title:'Loops: for e while',en:'Loops: for & while',
+       content:'Loops permitem repetir código automaticamente. O for itera sobre sequências (listas, strings, ranges). O while repete enquanto uma condição for verdadeira — cuidado com loops infinitos! range(start, stop, step) gera sequências numéricas. break sai do loop imediatamente. continue pula para a próxima iteração. enumerate() retorna índice + valor ao iterar. Em IA, loops são usados constantemente — para processar datasets, treinar modelos por epochs, iterar sobre predições.',
+       code:'# For loop\nfor i in range(5):\n    print(i)  # 0,1,2,3,4\n\nfruits = ["maçã", "banana", "uva"]\nfor i, fruit in enumerate(fruits):\n    print(f"{i}: {fruit}")\n\n# While loop\ncontador = 0\nwhile contador < 3:\n    print(f"Contagem: {contador}")\n    contador += 1\n\n# Break e continue\nfor n in range(10):\n    if n == 3: continue\n    if n == 7: break\n    print(n)',
+       glossary:[['loop','laço / repetição'],['iteration','iteração'],['range','intervalo'],['break','interromper'],['continue','continuar / pular'],['enumerate','enumerar'],['infinite loop','loop infinito'],['epoch','época (ciclo de treino em IA)']],
+       exercise:'Use um loop para calcular a soma de todos os números de 1 a 100. Depois, use outro loop para imprimir apenas os números pares entre 1 e 20.'},
+      {id:'m1l5',title:'Funções e escopo',en:'Functions & Scope',
+       content:'Funções são blocos de código reutilizáveis definidos com def. Elas podem receber parâmetros (inputs) e retornar valores com return. Se não tiver return, retornam None. Parâmetros podem ter valores padrão (default values). Você pode passar argumentos por nome (keyword arguments) ou por posição. Escopo: variáveis criadas dentro de uma função existem apenas lá (escopo local). Docstrings (""" """) documentam o que a função faz — use sempre. Em IA, você vai criar centenas de funções para preprocessar dados, avaliar modelos, etc.',
+       code:'def calcular_imc(peso, altura):\n    """Calcula o IMC. / Calculates BMI."""\n    imc = peso / (altura ** 2)\n    return round(imc, 2)\n\nresultado = calcular_imc(80, 1.75)\nprint(f"IMC: {resultado}")  # IMC: 26.12\n\ndef saudar(nome, idioma="pt"):\n    if idioma == "pt":\n        return f"Olá, {nome}!"\n    return f"Hello, {nome}!"\n\nprint(saudar("Fred"))         # Olá, Fred!\nprint(saudar("Fred", "en"))  # Hello, Fred!\n\ndef somar(*numeros):\n    return sum(numeros)\n\nprint(somar(1, 2, 3, 4))  # 10',
+       glossary:[['function','função'],['parameter','parâmetro'],['argument','argumento'],['return','retornar / retorno'],['scope','escopo'],['local scope','escopo local'],['global scope','escopo global'],['default value','valor padrão'],['docstring','documentação da função']],
+       exercise:'Crie uma função que receba uma lista de notas e retorne: a média, a maior nota e a menor nota. Teste com [7.5, 8.0, 6.5, 9.0, 5.5].'},
+      {id:'m1l6',title:'Listas e dicionários',en:'Lists & Dictionaries',
+       content:'Listas (lists) são coleções ordenadas e mutáveis. Dicionários (dictionaries) são coleções de pares chave:valor. São as estruturas de dados mais usadas em Python e em IA. Listas: append() adiciona, remove() remove, pop() remove e retorna, len() conta, sorted() ordena. List comprehension é uma forma elegante de criar listas: [x*2 for x in range(10)]. Dicionários: dict[key] acessa, dict.get(key) acessa sem erro, dict.keys(), dict.values(), dict.items(). Em IA, datasets inteiros são representados como listas de dicionários.',
+       code:'# Listas — Lists\nnotas = [7.5, 8.0, 6.5, 9.0]\nnotas.append(8.5)\nprint(notas[0])   # primeiro\nprint(notas[-1])  # último\nprint(sorted(notas))\n\n# List comprehension\npares = [x for x in range(20) if x % 2 == 0]\nprint(pares)\n\n# Dicionários — Dictionaries\nmodelo = {\n    "nome": "Random Forest",\n    "acuracia": 0.94,\n    "parametros": 100\n}\nprint(modelo["nome"])\nprint(modelo.get("versao", "N/A"))  # N/A sem erro\n\nfor chave, valor in modelo.items():\n    print(f"{chave}: {valor}")',
+       glossary:[['list','lista'],['dictionary','dicionário'],['key','chave'],['value','valor'],['index','índice'],['list comprehension','compreensão de lista'],['mutable','mutável'],['immutable','imutável']],
+       exercise:'Crie um dicionário representando um aluno com nome, notas (lista), e curso. Calcule a média das notas usando list comprehension e adicione ao dicionário.'},
+      {id:'m1l7',title:'Orientação a objetos (OOP)',en:'Object-Oriented Programming',
+       content:'OOP organiza código em classes — moldes para criar objetos. Uma classe define atributos (dados) e métodos (funções). __init__ é o construtor — roda ao criar um objeto. self representa o próprio objeto dentro da classe. Herança permite que uma classe herde de outra. Em IA e ML, você vai usar classes o tempo todo: modelos do Scikit-learn são classes, redes neurais do PyTorch herdam de nn.Module. Encapsulamento protege dados. Polimorfismo permite que objetos de classes diferentes respondam ao mesmo método.',
+       code:'class ModeloML:\n    """Representa um modelo de machine learning."""\n    \n    def __init__(self, nome, tipo):\n        self.nome = nome\n        self.tipo = tipo\n        self.treinado = False\n    \n    def treinar(self, dados):\n        print(f"Treinando {self.nome}...")\n        self.treinado = True\n        return self\n    \n    def prever(self, entrada):\n        if not self.treinado:\n            raise Exception("Modelo não treinado!")\n        return f"Previsão para: {entrada}"\n    \n    def __str__(self):\n        return f"{self.nome} ({self.tipo})"\n\nmodelo = ModeloML("RandomForest", "classificação")\nprint(modelo)\nmodelo.treinar([1,2,3])\nprint(modelo.prever("novo dado"))',
+       glossary:[['class','classe'],['object','objeto'],['instance','instância'],['method','método'],['attribute','atributo'],['constructor','construtor'],['inheritance','herança'],['encapsulation','encapsulamento'],['polymorphism','polimorfismo'],['self','referência ao próprio objeto']],
+       exercise:'Crie uma classe Calculadora com métodos somar, subtrair, multiplicar e dividir. Adicione um atributo historico que guarda todas as operações realizadas.'},
+      {id:'m1l8',title:'Arquivos e tratamento de erros',en:'Files & Error Handling',
+       content:'Ler e escrever arquivos é essencial em IA — datasets vêm de CSVs, JSONs, TXTs. Use open() com with (context manager) — garante que o arquivo é fechado mesmo se der erro. Modos: "r" (leitura), "w" (escrita), "a" (append), "rb"/"wb" (binário). JSON é o formato mais comum para configurações e dados estruturados. Tratamento de erros com try/except evita que seu programa quebre. Tipos comuns: FileNotFoundError, ValueError, TypeError, KeyError, IndexError. finally executa sempre, com ou sem erro.',
+       code:'import json\n\n# Escrevendo — Writing\nwith open("dados.txt", "w", encoding="utf-8") as f:\n    f.write("Linha 1\\n")\n\n# Lendo — Reading\nwith open("dados.txt", "r", encoding="utf-8") as f:\n    conteudo = f.read()\n\n# JSON\nconfig = {"modelo": "rf", "n_estimators": 100}\nwith open("config.json", "w") as f:\n    json.dump(config, f, indent=2)\n\n# Try/Except\ntry:\n    resultado = 10 / 0\nexcept ZeroDivisionError as e:\n    print(f"Erro: {e}")\nexcept Exception as e:\n    print(f"Erro inesperado: {e}")\nfinally:\n    print("Sempre executa")',
+       glossary:[['file handling','manipulação de arquivos'],['exception','exceção / erro'],['try/except','tentar / capturar'],['context manager','gerenciador de contexto'],['JSON','formato de dados estruturado'],['encoding','codificação de caracteres'],['raise','lançar um erro'],['finally','sempre executa']],
+       exercise:'Crie um programa que leia uma lista de números de um arquivo TXT (um por linha), calcule a média e salve o resultado em um arquivo JSON. Use try/except para tratar erros.'},
+    ],
+    exam:[
+      {q:'O que é tipagem dinâmica em Python?',opts:['Você deve declarar o tipo de cada variável','O interpretador descobre o tipo automaticamente','Tipos não existem em Python','Variáveis não podem mudar de tipo'],a:1},
+      {q:'Qual operador calcula o RESTO da divisão em Python?',opts:['/','//','%','**'],a:2},
+      {q:'O que acontece se você esquecer a indentação em um bloco if?',opts:['O código roda normalmente','Gera um IndentationError','Python usa chaves {} automaticamente','O bloco é ignorado'],a:1},
+      {q:'Qual é a diferença entre for e while?',opts:['Não há diferença','for itera sobre sequências; while repete enquanto condição for True','while é mais rápido','for só funciona com números'],a:1},
+      {q:'O que retorna uma função sem a instrução return?',opts:['0','""','None','Gera um erro'],a:2},
+      {q:'Como adicionar um item ao final de uma lista?',opts:['lista.add(item)','lista.insert(item)','lista.append(item)','lista.push(item)'],a:2},
+      {q:'O que é __init__ em uma classe Python?',opts:['Um método privado','O destrutor da classe','O construtor, executado ao criar o objeto','Um método estático'],a:2},
+      {q:'Qual modo de abertura ADICIONA conteúdo sem apagar o existente?',opts:['"r"','"w"','"a"','"x"'],a:2},
+      {q:'O que faz o try/except?',opts:['Torna o código mais rápido','Captura e trata erros sem quebrar o programa','Testa performance','Define tipos de variáveis'],a:1},
+      {q:'O que é list comprehension?',opts:['Uma forma de copiar listas','Sintaxe compacta para criar listas a partir de iterações','Um método de ordenação','Uma biblioteca Python'],a:1},
+    ]
+  },
+  {
+    id:'m2',color:'#1a1a2a',emoji:'🌐',
+    title:'Inglês Técnico para IA',titleEn:'Technical English for AI',weeks:4,
+    desc:'Documentações, papers e código são escritos em inglês. Este módulo te dá o vocabulário técnico essencial.',
+    lessons:[
+      {id:'m2l1',title:'Vocabulário de programação',en:'Programming Vocabulary',
+       content:'A maior parte do vocabulário técnico de programação é em inglês. Termos essenciais: function (função), variable (variável), array (vetor/lista), loop (laço), condition (condição), parameter (parâmetro), return (retorno), class (classe), object (objeto), method (método). Quando ler erros em inglês: "is not defined" = não foi definido, "index out of range" = índice fora do intervalo, "expected X got Y" = esperava X mas recebeu Y. Ler mensagens de erro corretamente é metade da solução do problema.',
+       code:'# Leia este código em voz alta em inglês:\ndef calculate_average(numbers):\n    total = sum(numbers)\n    count = len(numbers)\n    return total / count\n\n# Common error messages — Mensagens comuns:\n# NameError: name \'x\' is not defined\n#   → variável não foi criada\n# TypeError: unsupported operand\n#   → tipos incompatíveis\n# IndexError: list index out of range\n#   → índice além do tamanho da lista\n# KeyError: \'nome\'\n#   → chave não existe no dicionário',
+       glossary:[['debug','depurar / encontrar erros'],['deploy','implantar / publicar'],['repository','repositório (pasta do projeto)'],['commit','salvar versão no Git'],['branch','ramo / versão paralela'],['merge','mesclar / unir'],['pull request','solicitação de revisão de código'],['documentation','documentação'],['dependency','dependência (biblioteca necessária)']],
+       exercise:'Leia a documentação oficial do Python para a função sorted() em inglês (docs.python.org) e escreva em português o que ela faz, quais parâmetros aceita e 2 exemplos de uso.'},
+      {id:'m2l2',title:'Vocabulário de Machine Learning',en:'Machine Learning Vocabulary',
+       content:'Machine learning tem vocabulário técnico específico que você vai encontrar em toda documentação, paper e tutorial. Feature e label são os dois conceitos mais fundamentais: feature é a entrada do modelo (o que você sabe), label é a saída (o que você quer prever). Training e testing são as duas fases principais. Overfitting significa que o modelo memorizou os dados de treino mas não generaliza. Underfitting significa que o modelo é simples demais. Toda documentação do Scikit-learn, PyTorch e Hugging Face usa esses termos sem tradução.',
+       code:'# Vocabulário ML em código:\n\n# Dataset split — Divisão\nX_train, X_test = features[:80], features[80:]\ny_train, y_test = labels[:80], labels[80:]\n\n# Training — Treinamento\nmodel.fit(X_train, y_train)  # fit = treinar\n\n# Prediction — Predição\npredictions = model.predict(X_test)\n\n# Metrics — Métricas:\n# accuracy = acurácia (% corretos)\n# precision = dos positivos previstos, quantos eram?\n# recall = dos positivos reais, quantos encontrou?\n# loss = perda / erro do modelo\n# epoch = uma passagem completa pelo dataset',
+       glossary:[['feature','característica / variável de entrada'],['label','rótulo / variável alvo'],['training set','conjunto de treino'],['test set','conjunto de teste'],['overfitting','sobreajuste (memoriza sem generalizar)'],['underfitting','subajuste (simples demais)'],['accuracy','acurácia / precisão global'],['loss','perda / erro'],['epoch','época (ciclo de treino)'],['inference','inferência (usar o modelo treinado)']],
+       exercise:'Pesquise em inglês o que é "bias-variance tradeoff" e escreva uma explicação de 3 parágrafos em português, usando os termos técnicos em inglês.'},
+      {id:'m2l3',title:'Lendo documentação técnica',en:'Reading Technical Documentation',
+       content:'Saber ler documentação em inglês é uma das habilidades mais valiosas. A estrutura é sempre similar: Description (o que faz), Parameters (parâmetros de entrada com tipos), Returns (o que retorna), Examples (exemplos de uso), Notes/Warnings (avisos). Estratégia: 1) Leia o título e a primeira linha — entende 50% do que faz, 2) Vá direto para os Examples — código não mente, 3) Cheque os Parameters para entender customizações, 4) Leia os Notes para pegadinhas. Use Google Translate para palavras desconhecidas, mas tente ler sem traduzir.',
+       code:'# Como ler a doc do Scikit-learn:\n# sklearn.ensemble.RandomForestClassifier\n#\n# "An ensemble of decision trees fitted on\n#  sub-samples of the dataset"\n# → Conjunto de árvores em sub-amostras\n#\n# Parameters:\n# n_estimators : int, default=100\n#   → número de árvores na floresta\n# max_depth : int, default=None\n#   → profundidade máxima das árvores\n# random_state : int, default=None\n#   → semente aleatória (reprodutibilidade)\n\nfrom sklearn.ensemble import RandomForestClassifier\nmodel = RandomForestClassifier(n_estimators=100, random_state=42)',
+       glossary:[['deprecated','obsoleto (não use mais)'],['default','padrão / valor padrão'],['optional','opcional'],['required','obrigatório'],['returns','retorna'],['raises','lança (um erro)'],['see also','veja também'],['note','nota / observação'],['warning','aviso / cuidado']],
+       exercise:'Acesse a documentação do pandas (pandas.pydata.org/docs) e leia a página do método DataFrame.groupby(). Explique em português o que faz, com um exemplo prático.'},
+      {id:'m2l4',title:'Comunicação técnica escrita',en:'Technical Writing',
+       content:'Em um emprego de IA, você vai escrever: comentários no código, README de projetos, mensagens de commit no Git, relatórios técnicos. Em inglês, a comunicação técnica é direta e objetiva. Commits: use verbos no imperativo: "Add feature", "Fix bug", "Update model". READMEs: sempre inclua Installation, Usage e Examples. Comentários no código: explique o POR QUÊ, não o quê. Frases úteis: "As a result..." (como resultado), "In order to..." (para que...), "It is worth noting that..." (vale notar que...).',
+       code:'# BONS comentários em inglês:\n\n# Bad (o que o código faz — óbvio):\nx = x * 1.1  # multiply x by 1.1\n\n# Good (por que fazemos isso):\nx = x * 1.1  # apply 10% annual inflation adjustment\n\n# Commit messages:\n# feat: add prediction endpoint to FastAPI\n# fix: correct data normalization bug\n# docs: update README with installation steps\n# refactor: simplify model evaluation function\n\n# README mínimo:\n# # Project Name\n# Brief description.\n# ## Installation\n# ## Usage\n# ## Examples',
+       glossary:[['README','arquivo de documentação do projeto'],['commit message','mensagem de registro de mudança'],['refactor','refatorar (melhorar sem mudar função)'],['bug','erro / falha no código'],['feature','funcionalidade / recurso'],['release','versão lançada'],['issue','problema / tarefa reportada']],
+       exercise:'Escreva em inglês: 1) Um README de 10 linhas para o PredictOBD, 2) 3 mensagens de commit, 3) Um comentário explicando por que um cálculo específico é feito.'},
+    ],
+    exam:[
+      {q:'O que significa "index out of range" em Python?',opts:['Variável não definida','Você tentou acessar uma posição que não existe na lista','Erro de tipo','Loop infinito'],a:1},
+      {q:'Em ML, o que é uma "feature"?',opts:['O nome do modelo','Uma variável de entrada usada para fazer predições','O resultado do modelo','Um tipo de erro'],a:1},
+      {q:'O que significa "overfitting"?',opts:['Modelo muito simples','Modelo que memorizou os dados de treino mas não generaliza','Falta de dados','Erro de programação'],a:1},
+      {q:'Na documentação, "deprecated" significa:',opts:['Recomendado','Novo','Obsoleto, não deve ser usado','Experimental'],a:2},
+      {q:'Qual é a estrutura correta de uma mensagem de commit?',opts:['"mudei o código"','"feat: add user authentication endpoint"','"Update"','"fixed bug123"'],a:1},
+      {q:'O que é "training set"?',opts:['Conjunto para avaliar o modelo','Conjunto que o modelo usa para aprender','Os hiperparâmetros do modelo','A arquitetura da rede neural'],a:1},
+      {q:'O que "model.fit(X_train, y_train)" faz?',opts:['Faz predições','Avalia o modelo','Treina o modelo com os dados','Salva o modelo'],a:2},
+      {q:'Onde você deve IR PRIMEIRO ao ler documentação técnica?',opts:['Notes','Parameters','Examples','Returns'],a:2},
+      {q:'O que significa "optional" em parâmetros de uma função?',opts:['Obrigatório','Pode ou não ser fornecido, tem valor padrão','Experimental','Depreciado'],a:1},
+      {q:'Comentários no código devem explicar:',opts:['O que o código faz','Por que o código faz aquilo','O histórico de mudanças','O nome do autor'],a:1},
+    ]
+  },
+  {
+    id:'m3',color:'#1a1520',emoji:'📐',
+    title:'Matemática para IA',titleEn:'Math for AI',weeks:4,
+    desc:'Álgebra linear, estatística e cálculo são os pilares matemáticos dos algoritmos de IA. Conceitos práticos.',
+    lessons:[
+      {id:'m3l1',title:'Vetores e matrizes com NumPy',en:'Vectors & Matrices with NumPy',
+       content:'Vetores são listas de números. Matrizes são tabelas de números (linhas × colunas). Em IA, datasets são representados como matrizes: cada linha é uma amostra, cada coluna é uma feature. NumPy é a biblioteca padrão para operações numéricas em Python — muito mais rápida que listas Python puras. Shape é fundamental: (1000, 20) significa 1000 amostras com 20 features cada. Broadcasting permite operar arrays de formatos diferentes automaticamente.',
+       code:'import numpy as np\n\n# Vetor — Vector\nv = np.array([1, 2, 3, 4])\nprint(v.shape)   # (4,)\n\n# Matriz — Matrix\nM = np.array([[1, 2, 3],[4, 5, 6]])\nprint(M.shape)   # (2, 3)\n\n# Operações\nprint(v * 2)         # [2, 4, 6, 8]\nprint(np.dot(v, v))  # 30 (produto escalar)\n\n# Dataset simulado\nX = np.random.rand(100, 5)  # 100 amostras, 5 features\nprint(X.shape)              # (100, 5)\nprint(X.mean(axis=0))       # média de cada coluna',
+       glossary:[['vector','vetor'],['matrix','matriz'],['shape','formato / dimensões'],['dot product','produto escalar'],['element-wise','elemento a elemento'],['broadcasting','expansão automática de dimensões'],['transpose','transposta'],['axis','eixo (0=linhas, 1=colunas)']],
+       exercise:'Crie uma matriz NumPy 5×3 com números aleatórios. Calcule: a média de cada coluna, o valor máximo de cada linha, e a transposta da matriz.'},
+      {id:'m3l2',title:'Estatística descritiva',en:'Descriptive Statistics',
+       content:'Antes de treinar qualquer modelo, você precisa entender seus dados — isso é EDA (Exploratory Data Analysis). Medidas de tendência central: média (mean), mediana (median), moda (mode). Medidas de dispersão: variância (variance), desvio padrão (standard deviation). Distribuição normal: 68% dos dados estão a 1σ da média, 95% a 2σ. Correlação mede a relação linear entre duas variáveis: vai de -1 (inversa) a +1 (direta). Outliers são pontos extremos que podem distorcer o modelo.',
+       code:'import numpy as np\n\nnotas = np.array([6.5, 7.0, 8.5, 9.0, 5.5, 7.5, 8.0, 6.0, 9.5, 7.0])\n\nprint(f"Média / Mean: {np.mean(notas):.2f}")\nprint(f"Mediana / Median: {np.median(notas):.2f}")\nprint(f"Desvio padrão / Std: {np.std(notas):.2f}")\nprint(f"Variância / Variance: {np.var(notas):.2f}")\nprint(f"Min-Max: {notas.min()} - {notas.max()}")\n\n# Correlação\nidade = np.array([20,22,25,21,19,23,24,20,26,22])\ncorr = np.corrcoef(notas, idade)[0,1]\nprint(f"Correlação: {corr:.2f}")',
+       glossary:[['mean','média'],['median','mediana'],['standard deviation','desvio padrão'],['variance','variância'],['outlier','valor atípico'],['correlation','correlação'],['distribution','distribuição'],['EDA','Análise Exploratória de Dados']],
+       exercise:'Usando NumPy, analise um array de 50 números aleatórios: calcule todas as medidas estatísticas, identifique outliers (valores > média + 2*std).'},
+      {id:'m3l3',title:'Probabilidade e Bayes',en:'Probability & Bayes',
+       content:'Probabilidade é a base matemática de muitos algoritmos. P(A) = probabilidade do evento A acontecer (0 a 1). P(A|B) = probabilidade de A dado que B ocorreu. Teorema de Bayes: P(A|B) = P(B|A) × P(A) / P(B). Em ML: classificadores Naive Bayes usam isso para spam detection. A probabilidade a priori (prior) é o que você sabe antes de ver os dados. A posteriori (posterior) é o que você calcula após os dados. Distribuições importantes: Normal, Binomial, Poisson.',
+       code:'import numpy as np\n\n# Probabilidade empírica — Empirical probability\nlancamentos = 10000\ndado = np.random.randint(1, 7, lancamentos)\nprob_6 = np.sum(dado == 6) / lancamentos\nprint(f"P(6) empírico: {prob_6:.3f}")  # ~0.167\n\n# Distribuição normal\nmu, sigma = 7.0, 1.5\namostras = np.random.normal(mu, sigma, 1000)\nprob_above_8 = np.mean(amostras > 8)\nprint(f"P(nota > 8): {prob_above_8:.3f}")\n\n# Teorema de Bayes\np_spam = 0.3\np_palavra_spam = 0.8\np_palavra = 0.4\np_spam_dado_palavra = (p_palavra_spam * p_spam) / p_palavra\nprint(f"P(spam|palavra): {p_spam_dado_palavra:.3f}")',
+       glossary:[['probability','probabilidade'],['conditional probability','probabilidade condicional'],['prior','probabilidade a priori'],['posterior','probabilidade a posteriori'],['Bayes theorem','Teorema de Bayes'],['distribution','distribuição de probabilidade'],['expected value','valor esperado / média']],
+       exercise:'Implemente o Teorema de Bayes: dado que um teste tem 99% de precisão e a doença afeta 1% da população, qual a probabilidade de ter a doença se o teste der positivo?'},
+      {id:'m3l4',title:'Gradiente e otimização',en:'Gradient & Optimization',
+       content:'O gradiente é a derivada multidimensional — indica a direção de maior crescimento de uma função. Em ML, queremos MINIMIZAR a função de perda (loss function), então andamos na direção OPOSTA ao gradiente. Isso é o Gradient Descent. Learning rate controla o tamanho dos passos: muito grande = ultrapassa o mínimo, muito pequeno = leva muito tempo. Variações: SGD (Stochastic), Adam, RMSprop — Adam é o mais usado em deep learning.',
+       code:'import numpy as np\n\n# Minimizar f(x) = x² + 2x + 1 (mínimo em x=-1)\ndef f(x):\n    return x**2 + 2*x + 1\n\ndef gradiente(x):\n    return 2*x + 2\n\nx = 10.0\nlr = 0.1\nepochs = 50\n\nfor epoch in range(epochs):\n    grad = gradiente(x)\n    x = x - lr * grad\n    if epoch % 10 == 0:\n        print(f"Epoch {epoch}: x={x:.4f}, loss={f(x):.4f}")\n\nprint(f"Mínimo encontrado: x={x:.4f}")  # ~-1.0',
+       glossary:[['gradient','gradiente (direção de maior variação)'],['gradient descent','descida do gradiente'],['learning rate','taxa de aprendizado'],['loss function','função de perda / erro'],['optimization','otimização'],['convergence','convergência'],['local minimum','mínimo local'],['global minimum','mínimo global'],['SGD','Stochastic Gradient Descent']],
+       exercise:'Implemente gradient descent para minimizar f(x,y) = x² + y². Experimente learning rates (0.001, 0.1, 0.5) e compare quantas épocas cada precisa para convergir.'},
+    ],
+    exam:[
+      {q:'O que o .shape de um array NumPy representa?',opts:['O tipo dos dados','As dimensões do array (linhas × colunas)','O tamanho em bytes','A média dos valores'],a:1},
+      {q:'O que é desvio padrão?',opts:['A diferença entre max e min','O valor mais frequente','Medida de dispersão dos dados em torno da média','A média dos quadrados'],a:2},
+      {q:'Correlação de +0.95 entre duas variáveis indica:',opts:['Sem relação','Relação inversa forte','Relação direta forte','Relação fraca'],a:2},
+      {q:'O que o Teorema de Bayes calcula?',opts:['Média de uma distribuição','Probabilidade condicional a posteriori','Desvio padrão','Correlação entre variáveis'],a:1},
+      {q:'No gradient descent, o que é learning rate?',opts:['O número de iterações','O tamanho do dataset','O tamanho dos passos na otimização','A função que queremos minimizar'],a:2},
+      {q:'O que acontece com learning rate muito alto?',opts:['Convergência lenta','O algoritmo pode ultrapassar o mínimo e divergir','Funciona perfeitamente','Mais precisão'],a:1},
+      {q:'Em IA, datasets são representados como:',opts:['Listas Python simples','Strings','Matrizes (amostras × features)','Dicionários'],a:2},
+      {q:'O que é EDA?',opts:['Um algoritmo de ML','Análise Exploratória dos dados antes de modelar','Um tipo de rede neural','Uma métrica'],a:1},
+      {q:'O produto escalar (dot product) retorna:',opts:['Um vetor','Uma matriz','Um número escalar','Uma lista'],a:2},
+      {q:'Por que minimizamos a loss function?',opts:['Para aumentar os erros','Para que o modelo acerte mais as previsões','Para tornar o modelo mais rápido','Para reduzir o tamanho'],a:1},
+    ]
+  },
+  {
+    id:'m3b',color:'#10181a',emoji:'🐼',
+    title:'Pandas & Manipulação de Dados',titleEn:'Pandas & Data Manipulation',weeks:3,
+    desc:'A biblioteca mais usada em ciência de dados. Você vai aprender a carregar, limpar, transformar e analisar datasets reais com Pandas.',
+    lessons:[
+      {id:'m3bl1',title:'DataFrame e Series',en:'DataFrame & Series',
+       content:'Pandas tem duas estruturas principais: Series (coluna única, como uma lista com índice) e DataFrame (tabela 2D com linhas e colunas). Um DataFrame é o equivalente a uma planilha Excel no Python. Cada coluna é uma Series. Você pode criar DataFrames a partir de dicionários, listas, CSVs ou bancos de dados. O índice (index) identifica cada linha — por padrão é numérico, mas pode ser uma data, ID ou qualquer valor único. Em ML, cada linha é uma amostra e cada coluna é uma feature.',
+       code:`import pandas as pd
+import numpy as np
+
+# Criar DataFrame
+dados = {
+    'nome': ['Ana', 'Bruno', 'Carla', 'Diego'],
+    'idade': [25, 30, 22, 35],
+    'salario': [4500, 7200, 3800, 9100],
+    'area': ['TI', 'Vendas', 'TI', 'RH']
+}
+df = pd.DataFrame(dados)
+print(df)
+print(df.shape)        # (4, 4)
+print(df.dtypes)       # tipos de cada coluna
+print(df.describe())   # estatísticas básicas
+
+# Acessar coluna (Series)
+print(df['nome'])
+print(df[['nome', 'salario']])  # múltiplas colunas
+
+# Acessar linhas
+print(df.iloc[0])         # primeira linha (por posição)
+print(df.loc[0, 'nome'])  # valor específico`,
+       glossary:[['DataFrame','tabela 2D com linhas e colunas'],['Series','coluna/array com índice'],['index','índice — identificador de cada linha'],['iloc','acesso por posição numérica'],['loc','acesso por rótulo/nome'],['shape','dimensões (linhas, colunas)'],['dtypes','tipo de dado de cada coluna'],['describe','resumo estatístico do DataFrame']],
+       exercise:'Crie um DataFrame com dados de 5 alunos (nome, nota_python, nota_matematica, aprovado). Acesse a coluna de notas de python, filtre os aprovados e imprima o resultado.'},
+      {id:'m3bl2',title:'Leitura e escrita de arquivos',en:'Reading & Writing Files',
+       content:'Em projetos reais de ML, os dados vêm de arquivos CSV, Excel, JSON ou bancos de dados. Pandas lê esses formatos com uma linha de código. read_csv é o mais usado — carrega um CSV direto em um DataFrame. Parâmetros importantes: sep (separador), encoding (para caracteres especiais), usecols (selecionar apenas colunas necessárias), nrows (limitar linhas para testar). Sempre inspecione o DataFrame logo após carregar: head(), info(), shape, isnull().sum().',
+       code:`import pandas as pd
+
+# Ler CSV
+df = pd.read_csv('dados.csv', encoding='utf-8', sep=',')
+
+# Inspeção inicial — faça SEMPRE ao carregar dados
+print(df.head())          # primeiras 5 linhas
+print(df.tail())          # últimas 5 linhas
+print(df.info())          # tipos e valores nulos
+print(df.shape)           # dimensões
+print(df.isnull().sum())  # contagem de nulos por coluna
+
+# Ler Excel
+df_excel = pd.read_excel('relatorio.xlsx', sheet_name='Plan1')
+
+# Ler JSON
+df_json = pd.read_json('dados.json')
+
+# Salvar
+df.to_csv('resultado.csv', index=False)
+df.to_excel('resultado.xlsx', index=False)
+df.to_json('resultado.json', orient='records')`,
+       glossary:[['read_csv','ler arquivo CSV para DataFrame'],['head()','primeiras N linhas'],['tail()','últimas N linhas'],['info()','tipos e contagem de não-nulos'],['isnull()','verificar valores ausentes'],['to_csv','salvar DataFrame como CSV'],['encoding','codificação de caracteres'],['sep','separador de colunas (vírgula, ponto-vírgula)']],
+       exercise:'Crie um CSV manualmente com 10 linhas de dados fictícios de vendas (data, produto, quantidade, valor). Carregue com pd.read_csv, faça a inspeção completa e salve como Excel.'},
+      {id:'m3bl3',title:'Filtragem e seleção de dados',en:'Filtering & Selecting Data',
+       content:'Filtrar dados é uma das operações mais frequentes em análise de dados. Em Pandas, você usa condições booleanas dentro de colchetes. Você pode combinar filtros com & (e) e | (ou) — sempre com parênteses em cada condição. query() é uma alternativa mais legível para filtros complexos. isin() filtra por lista de valores. between() filtra intervalos. A seleção eficiente de dados reduz memória e acelera o processamento.',
+       code:`import pandas as pd
+
+df = pd.read_csv('vendas.csv')
+
+# Filtro simples
+ti = df[df['area'] == 'TI']
+
+# Filtros combinados
+senior_ti = df[(df['area'] == 'TI') & (df['salario'] > 5000)]
+
+# query() — mais legível
+resultado = df.query("area == 'TI' and salario > 5000")
+
+# isin() — múltiplos valores
+areas = df[df['area'].isin(['TI', 'Marketing'])]
+
+# between()
+faixa = df[df['salario'].between(4000, 8000)]
+
+# Selecionar colunas específicas
+resumo = df[['nome', 'salario', 'area']]
+
+# Ordenar
+df_ordenado = df.sort_values('salario', ascending=False)
+print(df_ordenado.head())`,
+       glossary:[['boolean indexing','filtragem por condição booleana'],['query()','filtrar com string de condição'],['isin()','filtrar por lista de valores'],['between()','filtrar por intervalo'],['sort_values()','ordenar por coluna'],['ascending','crescente (True) ou decrescente (False)'],['mask','máscara booleana para filtragem']],
+       exercise:'Com um DataFrame de vendas, filtre: 1) vendas acima de R$1000, 2) produtos específicos com isin(), 3) vendas em um intervalo de datas com between(). Combine dois filtros com &.'},
+      {id:'m3bl4',title:'Limpeza de dados',en:'Data Cleaning',
+       content:'Dados sujos são a realidade — valores nulos, duplicados, tipos errados, espaços extras. A limpeza consome 60-80% do tempo em projetos reais de ML. Valores nulos (NaN): dropna() remove linhas/colunas com nulos, fillna() preenche com um valor. duplicated() e drop_duplicates() eliminam linhas repetidas. astype() converte tipos. str.strip() remove espaços. replace() substitui valores. A regra de ouro: entenda POR QUE o dado está nulo antes de decidir o que fazer.',
+       code:`import pandas as pd
+import numpy as np
+
+df = pd.DataFrame({
+    'nome': ['Ana', 'Bruno', None, 'Ana', 'Diego'],
+    'idade': [25, np.nan, 22, 25, 35],
+    'salario': ['4500', '7200', '3800', '4500', None]
+})
+
+# Verificar nulos
+print(df.isnull().sum())
+
+# Remover linhas com nulo
+df_limpo = df.dropna()
+
+# Preencher nulos
+df['idade'] = df['idade'].fillna(df['idade'].median())
+df['nome'] = df['nome'].fillna('Desconhecido')
+
+# Remover duplicatas
+df = df.drop_duplicates()
+print(f"Após limpeza: {df.shape}")
+
+# Corrigir tipos
+df['salario'] = pd.to_numeric(df['salario'], errors='coerce')
+
+# Limpar strings
+df['nome'] = df['nome'].str.strip().str.title()`,
+       glossary:[['NaN','Not a Number — valor ausente'],['dropna()','remover linhas/colunas com nulos'],['fillna()','preencher valores nulos'],['drop_duplicates()','remover linhas duplicadas'],['astype()','converter tipo de coluna'],['to_numeric()','converter para número'],['str.strip()','remover espaços extras'],['errors=coerce','converter inválidos para NaN']],
+       exercise:'Crie um DataFrame com dados propositalmente sujos: nulos, duplicatas, colunas numéricas como string. Aplique todo o pipeline de limpeza e compare df.info() antes e depois.'},
+      {id:'m3bl5',title:'GroupBy e agregações',en:'GroupBy & Aggregations',
+       content:'GroupBy é uma das operações mais poderosas do Pandas — permite agrupar dados por uma ou mais colunas e aplicar funções de agregação. O padrão é: split (dividir em grupos) → apply (aplicar função) → combine (combinar resultados). Funções de agregação: sum, mean, count, min, max, std. agg() permite múltiplas funções ao mesmo tempo. pivot_table cria tabelas dinâmicas como no Excel. Em ML, GroupBy é fundamental para feature engineering — criar features como "média de vendas por cliente".',
+       code:`import pandas as pd
+
+df = pd.read_csv('vendas.csv')
+
+# GroupBy simples
+por_area = df.groupby('area')['salario'].mean()
+print(por_area)
+
+# Múltiplas agregações
+resumo = df.groupby('area').agg(
+    media_salario=('salario', 'mean'),
+    total_funcionarios=('nome', 'count'),
+    max_salario=('salario', 'max')
+).reset_index()
+print(resumo)
+
+# GroupBy com múltiplas colunas
+por_area_senioridade = df.groupby(['area', 'senioridade'])['salario'].mean()
+
+# Pivot table
+tabela = df.pivot_table(
+    values='salario',
+    index='area',
+    columns='senioridade',
+    aggfunc='mean'
+)
+print(tabela)`,
+       glossary:[['groupby()','agrupar dados por coluna(s)'],['agg()','aplicar múltiplas funções de agregação'],['reset_index()','transformar índice em coluna'],['pivot_table','tabela dinâmica'],['aggfunc','função de agregação'],['transform()','aplicar função mantendo o tamanho original'],['nunique()','contar valores únicos']],
+       exercise:'Com dados de vendas por cliente e produto, use GroupBy para calcular: total vendido por cliente, produto mais vendido por região, média de ticket por mês.'},
+      {id:'m3bl6',title:'Merge e Join de DataFrames',en:'Merge & Join DataFrames',
+       content:'Combinar tabelas é essencial quando seus dados estão em múltiplas fontes — como em bancos de dados relacionais. pd.merge() é o equivalente ao JOIN do SQL. Tipos: inner (só registros em ambas), left (todos da esquerda), right (todos da direita), outer (todos de ambas). concat() empilha DataFrames verticalmente (como UNION no SQL). Sempre verifique o shape antes e depois do merge para garantir que não perdeu ou duplicou dados.',
+       code:`import pandas as pd
+
+clientes = pd.DataFrame({
+    'id': [1, 2, 3, 4],
+    'nome': ['Ana', 'Bruno', 'Carla', 'Diego']
+})
+
+pedidos = pd.DataFrame({
+    'id_cliente': [1, 1, 2, 3, 5],
+    'produto': ['Notebook', 'Mouse', 'Teclado', 'Monitor', 'Cabo'],
+    'valor': [3500, 120, 250, 1200, 45]
+})
+
+# Inner join — só quem tem pedidos E está em clientes
+inner = pd.merge(clientes, pedidos, left_on='id', right_on='id_cliente')
+
+# Left join — todos os clientes, mesmo sem pedido
+left = pd.merge(clientes, pedidos, left_on='id', right_on='id_cliente', how='left')
+
+# Verificar resultado
+print(f"Clientes: {clientes.shape}, Pedidos: {pedidos.shape}")
+print(f"Inner: {inner.shape}, Left: {left.shape}")
+
+# Concat — empilhar DataFrames
+df_total = pd.concat([clientes, clientes], ignore_index=True)`,
+       glossary:[['merge()','combinar DataFrames por chave (como JOIN no SQL)'],['inner','apenas registros em ambas as tabelas'],['left join','todos da esquerda + correspondentes da direita'],['outer','todos de ambas as tabelas'],['concat()','empilhar DataFrames verticalmente'],['on','coluna de junção com mesmo nome'],['left_on/right_on','colunas de junção com nomes diferentes']],
+       exercise:'Crie 3 DataFrames: clientes, pedidos e produtos. Faça merges para criar um relatório completo com nome do cliente, produto e valor. Use left join e compare com inner join.'},
+    ],
+    exam:[
+      {q:'Qual a diferença entre Series e DataFrame no Pandas?',opts:['São a mesma coisa','Series é uma coluna (1D), DataFrame é uma tabela (2D)','DataFrame é mais lento','Series não aceita strings'],a:1},
+      {q:'O que df.info() mostra?',opts:['Apenas as primeiras linhas','Tipos de dados, contagem de não-nulos e uso de memória','Apenas estatísticas','O índice do DataFrame'],a:1},
+      {q:'Como filtrar linhas onde salario > 5000 E area == "TI"?',opts:['df[salario>5000 and area=="TI"]','df[(df.salario>5000) & (df.area=="TI")]','df.filter(salario>5000, area=="TI")','df.query(salario>5000)'],a:1},
+      {q:'O que fillna() faz?',opts:['Remove linhas com nulos','Preenche valores nulos com um valor definido','Conta nulos','Converte tipos'],a:1},
+      {q:'O que drop_duplicates() faz?',opts:['Remove colunas duplicadas','Remove linhas duplicadas','Renomeia colunas','Ordena o DataFrame'],a:1},
+      {q:'GroupBy com agg() serve para:',opts:['Filtrar dados','Agrupar e aplicar múltiplas funções de agregação','Fazer joins','Remover nulos'],a:1},
+      {q:'Qual o equivalente Pandas do JOIN do SQL?',opts:['pd.concat()','pd.merge()','df.join_sql()','df.combine()'],a:1},
+      {q:'Left join em pd.merge() retorna:',opts:['Apenas registros em ambas as tabelas','Todos os registros da tabela da esquerda','Apenas correspondências exatas','Todos de ambas as tabelas'],a:1},
+      {q:'Para converter uma coluna de string para número, usa-se:',opts:['df[col].to_int()','pd.to_numeric(df[col], errors="coerce")','df[col].astype("string")','int(df[col])'],a:1},
+      {q:'O que pd.concat() faz?',opts:['Combina tabelas por chave','Empilha DataFrames verticalmente','Agrupa dados','Filtra linhas'],a:1},
+    ]
+  },
+  {
+    id:'m3c',color:'#1a1015',emoji:'📊',
+    title:'Visualização de Dados',titleEn:'Data Visualization',weeks:2,
+    desc:'Dados sem visualização são cegos. Aprenda Matplotlib e Seaborn para criar gráficos que comunicam insights rapidamente.',
+    lessons:[
+      {id:'m3cl1',title:'Matplotlib — gráficos essenciais',en:'Matplotlib — Essential Charts',
+       content:'Matplotlib é a base de toda visualização em Python. Funciona em dois modos: pyplot (rápido, similar ao MATLAB) e orientado a objetos com Figure e Axes (recomendado para projetos sérios). Todo gráfico tem: Figure (a janela), Axes (o espaço do gráfico), title, xlabel, ylabel. Sempre defina tamanho da figura com figsize para não ficar pequeno. savefig() salva em PNG/PDF de alta qualidade. Em notebooks Jupyter, use %matplotlib inline para mostrar inline.',
+       code:`import matplotlib.pyplot as plt
+import numpy as np
+
+# Dados de exemplo
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+# Modo orientado a objetos (recomendado)
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+
+# Linha
+axes[0,0].plot(x, y, color='#00d4aa', linewidth=2)
+axes[0,0].set_title('Gráfico de Linha')
+axes[0,0].set_xlabel('X')
+axes[0,0].set_ylabel('sin(X)')
+
+# Dispersão (scatter)
+axes[0,1].scatter(np.random.rand(50), np.random.rand(50),
+                  alpha=0.7, c='#00d4aa')
+axes[0,1].set_title('Dispersão')
+
+# Barras
+categorias = ['Python', 'ML', 'Stats', 'Deploy']
+valores = [85, 72, 68, 90]
+axes[1,0].bar(categorias, valores, color='#00d4aa')
+axes[1,0].set_title('Barras')
+
+# Histograma
+dados = np.random.normal(70, 10, 500)
+axes[1,1].hist(dados, bins=20, color='#00d4aa', edgecolor='black')
+axes[1,1].set_title('Histograma')
+
+plt.tight_layout()
+plt.savefig('graficos.png', dpi=150)
+plt.show()`,
+       glossary:[['Figure','janela/canvas do gráfico'],['Axes','área de um gráfico individual'],['subplot','múltiplos gráficos em uma figura'],['figsize','tamanho da figura (largura, altura) em polegadas'],['dpi','resolução da imagem (dots per inch)'],['tight_layout','ajusta espaçamento automático'],['alpha','transparência (0=invisível, 1=opaco)'],['scatter','gráfico de dispersão (pontos)']],
+       exercise:'Crie uma figura com 4 subplots: linha do sin(x), scatter de notas vs horas de estudo, barras de 5 linguagens mais populares, histograma de 1000 valores normais.'},
+      {id:'m3cl2',title:'Seaborn — visualização estatística',en:'Seaborn — Statistical Visualization',
+       content:'Seaborn é construído sobre Matplotlib e especializado em visualizações estatísticas. O diferencial: integração nativa com DataFrames do Pandas e gráficos estatísticos prontos. boxplot mostra distribuição e outliers. violinplot combina boxplot com distribuição. heatmap é perfeito para correlações. pairplot cria matriz de scatter entre todas as colunas — essencial na EDA. countplot conta categorias. lmplot adiciona linha de regressão ao scatter.',
+       code:`import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Dataset de exemplo (Seaborn tem datasets prontos)
+tips = sns.load_dataset('tips')
+
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Boxplot — distribuição por categoria
+sns.boxplot(data=tips, x='day', y='total_bill',
+            palette='viridis', ax=axes[0,0])
+axes[0,0].set_title('Conta por Dia da Semana')
+
+# Heatmap de correlação
+corr = tips.select_dtypes('number').corr()
+sns.heatmap(corr, annot=True, fmt='.2f',
+            cmap='coolwarm', ax=axes[0,1])
+axes[0,1].set_title('Matriz de Correlação')
+
+# Histplot com KDE
+sns.histplot(tips['total_bill'], kde=True,
+             color='#00d4aa', ax=axes[1,0])
+axes[1,0].set_title('Distribuição da Conta')
+
+# Scatter com regressão
+sns.regplot(data=tips, x='total_bill', y='tip',
+            color='#00d4aa', ax=axes[1,1])
+axes[1,1].set_title('Conta vs Gorjeta')
+
+plt.tight_layout()
+plt.show()`,
+       glossary:[['boxplot','caixa com mediana, quartis e outliers'],['violinplot','boxplot + distribuição de densidade'],['heatmap','mapa de calor (ótimo para correlações)'],['pairplot','matriz de scatter entre todas as colunas'],['kde','Kernel Density Estimation — curva de densidade'],['palette','paleta de cores'],['annot','mostrar valores dentro do heatmap'],['regplot','scatter com linha de regressão']],
+       exercise:'Carregue o dataset iris do seaborn (sns.load_dataset("iris")). Crie: 1) boxplot de petal_length por species, 2) heatmap de correlação, 3) pairplot completo colorido por species.'},
+      {id:'m3cl3',title:'Visualizações para ML',en:'Visualizations for ML',
+       content:'Em projetos de ML, certas visualizações são padrão da indústria: curva de aprendizado (learning curve) mostra overfitting/underfitting, confusion matrix visualiza onde o classificador erra, feature importance bar chart mostra quais variáveis importam, curva ROC avalia classificadores binários. Estas visualizações são o que você vai apresentar em relatórios técnicos e em entrevistas.',
+       code:`import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from sklearn.metrics import confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+
+iris = load_iris()
+X_tr, X_te, y_tr, y_te = train_test_split(
+    iris.data, iris.target, test_size=0.2, random_state=42)
+
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_tr, y_tr)
+y_pred = rf.predict(X_te)
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+# Confusion Matrix
+cm = confusion_matrix(y_te, y_pred)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=iris.target_names,
+            yticklabels=iris.target_names, ax=axes[0])
+axes[0].set_title('Matriz de Confusão')
+axes[0].set_ylabel('Real')
+axes[0].set_xlabel('Previsto')
+
+# Feature Importance
+importances = rf.feature_importances_
+axes[1].barh(iris.feature_names, importances, color='#00d4aa')
+axes[1].set_title('Importância das Features')
+axes[1].set_xlabel('Importância')
+
+plt.tight_layout()
+plt.show()`,
+       glossary:[['confusion matrix','matriz que mostra acertos e erros do classificador'],['feature importance','importância de cada variável para o modelo'],['learning curve','curva que mostra treino vs validação por época'],['ROC curve','tradeoff entre taxa de verdadeiros/falsos positivos'],['AUC','área sob a curva ROC'],['false positive','previu positivo mas era negativo'],['false negative','previu negativo mas era positivo']],
+       exercise:'Treine um RandomForest no dataset load_breast_cancer. Crie: 1) matriz de confusão, 2) top-10 features mais importantes, 3) curva ROC com AUC.'},
+    ],
+    exam:[
+      {q:'Qual a diferença entre Figure e Axes no Matplotlib?',opts:['São iguais','Figure é a janela; Axes é a área de um gráfico individual','Figure é menor','Axes é para 3D'],a:1},
+      {q:'Para que serve o boxplot?',opts:['Mostrar correlação','Visualizar distribuição, mediana, quartis e outliers','Criar barras empilhadas','Plotar séries temporais'],a:1},
+      {q:'O heatmap é mais útil para:',opts:['Mostrar tendências no tempo','Visualizar matriz de correlação entre variáveis','Comparar categorias','Mostrar distribuição'],a:1},
+      {q:'O que o pairplot do Seaborn cria?',opts:['Um único gráfico grande','Matriz de scatter entre todas as colunas numéricas','Apenas histogramas','Um heatmap'],a:1},
+      {q:'A confusion matrix mostra:',opts:['A acurácia geral','Onde o modelo acerta e erra por classe','A curva de aprendizado','Os hiperparâmetros'],a:1},
+      {q:'Feature importance indica:',opts:['O tipo de cada feature','Quais variáveis mais contribuem para a previsão do modelo','A correlação entre features','O número de valores únicos'],a:1},
+      {q:'Para salvar um gráfico em alta resolução, usa-se:',opts:['plt.export()','plt.savefig("nome.png", dpi=150)','plt.save()','fig.export("png")'],a:1},
+      {q:'O parâmetro alpha em scatter controla:',opts:['O tamanho dos pontos','A transparência dos pontos','A cor','O título'],a:1},
+      {q:'sns.regplot() cria:',opts:['Apenas pontos de scatter','Scatter com linha de regressão linear','Um boxplot','Um histograma'],a:1},
+      {q:'tight_layout() serve para:',opts:['Aumentar a resolução','Ajustar automaticamente espaçamento entre subplots','Mudar o tema','Salvar o arquivo'],a:1},
+    ]
+  },
+  {
+    id:'m4',color:'#1a1a10',emoji:'🤖',
+    title:'Machine Learning com Scikit-learn',titleEn:'Machine Learning with Scikit-learn',weeks:6,
+    desc:'O coração do curso. Treine, avalie e ajuste modelos reais com a biblioteca mais usada no mercado.',
+    lessons:[
+      {id:'m4l1',title:'Introdução ao Scikit-learn',en:'Intro to Scikit-learn',
+       content:'Scikit-learn (sklearn) é a biblioteca de ML mais usada em Python para modelos tradicionais. API consistente: todos os modelos seguem o mesmo padrão — instanciar, fit(), predict(). Cobre: classificação, regressão, clustering, preprocessamento. Sempre divida seus dados em treino e teste ANTES de qualquer preprocessamento — evita data leakage (vazamento de dados). random_state=42 garante reprodutibilidade dos resultados.',
+       code:'from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.metrics import accuracy_score\n\niris = load_iris()\nX, y = iris.data, iris.target\nprint(f"Shape: {X.shape}")  # (150, 4)\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\nscaler = StandardScaler()\nX_train = scaler.fit_transform(X_train)  # aprende E transforma\nX_test = scaler.transform(X_test)         # só transforma\n\nmodel = KNeighborsClassifier(n_neighbors=3)\nmodel.fit(X_train, y_train)\n\nprevisoes = model.predict(X_test)\nprint(f"Acurácia: {accuracy_score(y_test, previsoes):.2%}")',
+       glossary:[['train_test_split','divisão treino/teste'],['fit','treinar / ajustar'],['predict','prever / predizer'],['transform','transformar (preprocessar)'],['data leakage','vazamento de dados'],['random_state','semente aleatória'],['normalization','normalização dos dados']],
+       exercise:'Carregue o dataset load_breast_cancer do sklearn, faça train_test_split 80/20, normalize com StandardScaler e treine um KNN. Qual a acurácia?'},
+      {id:'m4l2',title:'Regressão linear e logística',en:'Linear & Logistic Regression',
+       content:'Regressão linear prediz valores contínuos (preço, temperatura). A linha y = mx + b é encontrada minimizando o MSE (Mean Squared Error). Regressão logística, apesar do nome, é um classificador — prediz probabilidades usando a função sigmoide. Métricas de regressão: MAE, MSE, RMSE, R². Métricas de classificação: accuracy, precision, recall, F1-score. Confusion matrix mostra onde o modelo erra. Regularização (L1=Lasso, L2=Ridge) previne overfitting.',
+       code:'from sklearn.linear_model import LinearRegression, LogisticRegression\nfrom sklearn.metrics import mean_squared_error, r2_score, classification_report\nimport numpy as np\n\n# Regressão Linear\nX = np.array([[1],[2],[3],[4],[5],[6],[7],[8]])\ny = np.array([2.1, 3.9, 6.1, 7.9, 10.2, 12.1, 13.9, 16.1])\n\nreg = LinearRegression()\nreg.fit(X, y)\nprint(f"R²: {r2_score(y, reg.predict(X)):.3f}")\n\n# Regressão Logística\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split\n\ndata = load_breast_cancer()\nX_tr, X_te, y_tr, y_te = train_test_split(\n    data.data, data.target, test_size=0.2, random_state=42\n)\nclf = LogisticRegression(max_iter=1000)\nclf.fit(X_tr, y_tr)\nprint(classification_report(y_te, clf.predict(X_te)))',
+       glossary:[['linear regression','regressão linear'],['logistic regression','regressão logística'],['MSE','Mean Squared Error — Erro Quadrático Médio'],['R²','coeficiente de determinação (0-1, melhor=1)'],['sigmoid','sigmoide (função S para probabilidades)'],['confusion matrix','matriz de confusão'],['precision','precisão'],['recall','revocação'],['F1-score','média harmônica de precision e recall'],['regularization','regularização']],
+       exercise:'Crie um dataset sintético com make_regression do sklearn, treine LinearRegression e Ridge (alpha=1.0). Compare MSE e R² de ambos.'},
+      {id:'m4l3',title:'Árvores de decisão e Random Forest',en:'Decision Trees & Random Forest',
+       content:'Árvores de decisão tomam decisões sequenciais — como um fluxograma. São interpretáveis mas tendem ao overfitting. Random Forest é um ensemble de árvores — treina centenas em subamostras diferentes e combina as predições (bagging). O resultado é muito mais robusto. Feature importance mostra quais variáveis são mais relevantes — extremamente útil em negócios. Hiperparâmetros importantes: n_estimators, max_depth, min_samples_split.',
+       code:'from sklearn.tree import DecisionTreeClassifier\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score\n\niris = load_iris()\nX_tr, X_te, y_tr, y_te = train_test_split(\n    iris.data, iris.target, test_size=0.2, random_state=42\n)\n\ntree = DecisionTreeClassifier(max_depth=3, random_state=42)\ntree.fit(X_tr, y_tr)\nprint(f"Árvore: {accuracy_score(y_te, tree.predict(X_te)):.2%}")\n\nrf = RandomForestClassifier(n_estimators=100, random_state=42)\nrf.fit(X_tr, y_tr)\nprint(f"Random Forest: {accuracy_score(y_te, rf.predict(X_te)):.2%}")\n\nfor name, imp in zip(iris.feature_names, rf.feature_importances_):\n    print(f"{name}: {imp:.3f}")',
+       glossary:[['decision tree','árvore de decisão'],['random forest','floresta aleatória'],['ensemble','conjunto de modelos'],['bagging','treinar em subamostras aleatórias'],['feature importance','importância das variáveis'],['n_estimators','número de árvores'],['max_depth','profundidade máxima'],['pruning','poda da árvore']],
+       exercise:'No dataset load_wine do sklearn, compare Decision Tree e Random Forest. Use feature_importances_ para identificar os 3 ingredientes mais importantes para classificar o vinho.'},
+      {id:'m4l4',title:'Validação cruzada e métricas avançadas',en:'Cross-validation & Advanced Metrics',
+       content:'Cross-validation divide os dados em k partes (folds), treina em k-1 e testa em 1, repetindo k vezes — estimativa mais confiável da performance real. GridSearchCV automatiza a busca pelo melhor conjunto de hiperparâmetros. Para dados desbalanceados (ex: 95% negativos), acurácia de 95% é enganosa — use ROC-AUC, F1, precision-recall. Curva ROC mostra o tradeoff entre true positive rate e false positive rate. AUC = área sob a curva ROC (1.0 = perfeito).',
+       code:'from sklearn.model_selection import cross_val_score, GridSearchCV\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import load_breast_cancer\n\ndata = load_breast_cancer()\nX, y = data.data, data.target\n\n# Cross-validation\nmodel = RandomForestClassifier(random_state=42)\nscores = cross_val_score(model, X, y, cv=5, scoring="accuracy")\nprint(f"CV Accuracy: {scores.mean():.3f} ± {scores.std():.3f}")\n\n# GridSearchCV\nparam_grid = {\n    "n_estimators": [50, 100, 200],\n    "max_depth": [None, 5, 10]\n}\ngrid = GridSearchCV(RandomForestClassifier(random_state=42),\n                    param_grid, cv=5, scoring="roc_auc")\ngrid.fit(X, y)\nprint(f"Melhores params: {grid.best_params_}")\nprint(f"Melhor AUC: {grid.best_score_:.3f}")',
+       glossary:[['cross-validation','validação cruzada'],['k-fold','divisão em k partes'],['GridSearchCV','busca em grade de hiperparâmetros'],['hyperparameter','hiperparâmetro (configuração do modelo)'],['ROC curve','curva ROC'],['AUC','Area Under Curve'],['imbalanced dataset','dataset desbalanceado']],
+       exercise:'Use GridSearchCV para encontrar os melhores hiperparâmetros do Random Forest no dataset load_digits. Busque: n_estimators=[50,100], max_depth=[5,10,None]. Reporte o melhor AUC.'},
+    ],
+    exam:[
+      {q:'Por que normalizar apenas com fit_transform nos dados de TREINO?',opts:['Para deixar o modelo mais rápido','Para evitar data leakage','Por limitação do sklearn','Para economizar memória'],a:1},
+      {q:'Qual a diferença entre regressão linear e logística?',opts:['Não há diferença','Linear prediz valores contínuos; logística prediz classes','Logística é mais rápida','Linear é mais precisa'],a:1},
+      {q:'Random Forest é melhor que Decision Tree porque:',opts:['Usa menos memória','Combina predições de múltiplas árvores, reduzindo overfitting','É mais simples','Treina mais rápido'],a:1},
+      {q:'O que é cross-validation?',opts:['Um tipo de modelo','Técnica que divide dados em k partes e treina/testa k vezes','Forma de normalizar dados','Método de regularização'],a:1},
+      {q:'Por que acurácia pode ser enganosa em datasets desbalanceados?',opts:['Sempre é enganosa','Porque o modelo que prediz sempre a classe majoritária terá alta acurácia','Porque é difícil de calcular','Depende do random_state'],a:1},
+      {q:'AUC-ROC de 0.5 indica:',opts:['Modelo perfeito','Modelo igual a escolha aleatória','Modelo péssimo','Overfitting'],a:1},
+      {q:'Feature importance no Random Forest indica:',opts:['A velocidade de cada feature','Quais variáveis mais influenciam a predição','O tipo de cada variável','O número de valores únicos'],a:1},
+      {q:'GridSearchCV serve para:',opts:['Visualizar dados','Automatizar a busca pelo melhor conjunto de hiperparâmetros','Normalizar features','Dividir treino/teste'],a:1},
+      {q:'O que é overfitting?',opts:['Modelo simples demais','Modelo que performa bem no treino mas mal em dados novos','Falta de dados de treino','Erro de implementação'],a:1},
+      {q:'R² próximo de 1.0 indica:',opts:['Alta perda','O modelo explica bem a variância dos dados','Overfitting','Dados desbalanceados'],a:1},
+    ]
+  },
+  {
+    id:'m5',color:'#101a1a',emoji:'🧠',
+    title:'APIs de LLM e Prompt Engineering',titleEn:'LLM APIs & Prompt Engineering',weeks:4,
+    desc:'O diferencial do mercado atual. Integre e orquestre modelos de linguagem em aplicações reais.',
+    lessons:[
+      {id:'m5l1',title:'Como funcionam os LLMs',en:'How LLMs Work',
+       content:'LLMs (Large Language Models) são redes neurais treinadas em enormes quantidades de texto para prever o próximo token. Emergem capacidades surpreendentes: raciocínio, código, tradução. Tokens: LLMs processam tokens (~4 caracteres em média), não palavras. 1000 tokens ≈ 750 palavras. Temperatura controla a criatividade: 0 = determinístico, 1 = criativo. Context window é o limite de texto que o modelo "lembra". Modelos populares: Claude (Anthropic), GPT-4 (OpenAI), Gemini (Google), LLaMA (Meta).',
+       code:'# Conceitos de LLM em pseudocódigo\n\n# Tokenização\n# "machine learning" → ["machine", " learn", "ing"]\n# "inteligência" → ["intel", "ig", "ência"]\n\n# Temperatura\n# temperature=0.0 → determinístico, consistente\n# temperature=0.7 → equilíbrio (recomendado)\n# temperature=1.0 → mais criativo / variado\n# temperature=1.5 → muito criativo / incoerente\n\n# Context window\n# claude-sonnet: 200k tokens (~150k palavras!)\n# Tudo conta: system prompt + histórico + resposta\n\n# Custo\n# Cobrado por token de entrada + saída\n# Seja específico mas conciso para economizar',
+       glossary:[['LLM','Large Language Model — Modelo de Linguagem Grande'],['token','unidade de texto (~4 chars) processada pelo modelo'],['temperature','temperatura (criatividade/aleatoriedade)'],['context window','janela de contexto (memória da conversa)'],['prompt','instrução/texto de entrada'],['completion','resposta gerada pelo modelo'],['fine-tuning','ajuste fino do modelo'],['embedding','representação vetorial de texto'],['inference','uso do modelo para gerar respostas']],
+       exercise:'Acesse claude.ai e teste o mesmo prompt com 3 abordagens: 1) direto e curto, 2) com contexto detalhado, 3) com exemplos. Compare as respostas e anote as diferenças.'},
+      {id:'m5l2',title:'API da Anthropic — Claude',en:'Anthropic Claude API',
+       content:'A API da Anthropic permite integrar Claude em qualquer aplicação Python. Você precisa de uma API key — crie em console.anthropic.com. Instale: pip install anthropic. O cliente usa o padrão messages: lista de dicionários com role (user/assistant) e content (texto). system prompt define o comportamento do assistente. Boas práticas: NUNCA coloque a API key no código — use variáveis de ambiente (os.environ). Controle custos com max_tokens.',
+       code:'import anthropic\nimport os\n\nclient = anthropic.Anthropic(\n    api_key=os.environ["ANTHROPIC_API_KEY"]  # nunca hardcode!\n)\n\n# Chamada simples\nmessage = client.messages.create(\n    model="claude-haiku-4-5",\n    max_tokens=1024,\n    system="Você é um assistente de dados. Responda em português.",\n    messages=[\n        {"role": "user",\n         "content": "Explique overfitting em 2 parágrafos."}\n    ]\n)\nprint(message.content[0].text)\n\n# Conversa multi-turn\nhistorico = []\n\ndef chat(mensagem_usuario):\n    historico.append({"role":"user","content":mensagem_usuario})\n    resp = client.messages.create(\n        model="claude-haiku-4-5",\n        max_tokens=512,\n        messages=historico\n    )\n    resposta = resp.content[0].text\n    historico.append({"role":"assistant","content":resposta})\n    return resposta',
+       glossary:[['API key','chave de acesso à API (mantenha secreta)'],['system prompt','instrução de comportamento do assistente'],['messages','histórico de mensagens da conversa'],['max_tokens','máximo de tokens na resposta'],['role','papel: user ou assistant'],['environment variable','variável de ambiente'],['rate limit','limite de requisições por minuto']],
+       exercise:'Crie um script Python que usa a API do Claude para: 1) analisar um texto e extrair 5 pontos principais, 2) gerar um resumo em inglês, 3) traduzir de volta ao português.'},
+      {id:'m5l3',title:'Prompt engineering avançado',en:'Advanced Prompt Engineering',
+       content:'Prompt engineering é a arte de instruir LLMs para obter melhores resultados. Técnicas: Zero-shot (sem exemplos), Few-shot (com exemplos), Chain-of-thought (peça para pensar passo a passo). Estrutura de um bom prompt: 1) Contexto, 2) Tarefa clara, 3) Formato de saída, 4) Restrições, 5) Exemplos. XML tags ajudam a estruturar prompts complexos. Evite ambiguidade — LLMs interpretam o que você escreve, não o que quis dizer. Teste e itere.',
+       code:'# Zero-shot\nprompt_zero = """Classifique o sentimento como POSITIVO, NEGATIVO ou NEUTRO.\nTexto: "O produto chegou rápido mas veio danificado."\nSentimento:"""\n\n# Few-shot com exemplos\nprompt_few = """Classifique o sentimento:\nTexto: "Ótimo produto!" → POSITIVO\nTexto: "Muito ruim." → NEGATIVO\nTexto: "O produto chegou." → NEUTRO\nTexto: "Chegou rápido mas danificado." → """\n\n# Chain-of-thought\nprompt_cot = """Resolva pensando passo a passo:\nUm trem parte às 14h e chega às 18h30.\nQuantas horas de viagem?\nPense:\n1. Horário de partida:\n2. Horário de chegada:\n3. Diferença:\n4. Resposta:"""\n\n# Structured output — JSON\nprompt_json = """Extraia dados do texto. Retorne APENAS JSON:\n{"nome": str, "empresa": str, "cargo": str}\nTexto: "João Silva é Gerente de TI na ABC LTDA."""',
+       glossary:[['zero-shot','sem exemplos no prompt'],['few-shot','com exemplos no prompt'],['chain-of-thought','raciocínio passo a passo'],['system prompt','instrução de comportamento'],['structured output','saída estruturada (JSON, XML)'],['hallucination','alucinação — modelo inventa informações falsas'],['grounding','ancoragem em fatos/documentos reais']],
+       exercise:'Crie 3 versões de um prompt para extrair informações de currículos. Use: 1) zero-shot, 2) few-shot com 2 exemplos, 3) chain-of-thought. Compare os resultados.'},
+      {id:'m5l4',title:'Construindo aplicação com LLM',en:'Building LLM Application',
+       content:'Uma aplicação real com LLM tem: 1) Interface (CLI, API REST, ou web), 2) Gerenciamento de contexto, 3) Processamento de entrada, 4) Chamada ao LLM com retry, 5) Processamento de saída. FastAPI é ideal para criar endpoints REST que chamam LLMs. RAG (Retrieval-Augmented Generation) combina busca em documentos com geração — permite que o modelo "saiba" sobre seus dados específicos sem fine-tuning.',
+       code:'from fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel\nimport anthropic\nimport os\n\napp = FastAPI()\nclient = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])\n\nclass AnaliseRequest(BaseModel):\n    texto: str\n\nclass AnaliseResponse(BaseModel):\n    resumo: str\n    sentimento: str\n    pontos_chave: list[str]\n\n@app.post("/analisar", response_model=AnaliseResponse)\nasync def analisar_texto(req: AnaliseRequest):\n    prompt = f"""Analise o texto e retorne JSON:\n{{"resumo": "1 frase", "sentimento": "POSITIVO/NEGATIVO/NEUTRO",\n "pontos_chave": ["ponto1", "ponto2", "ponto3"]}}\nTexto: {req.texto}\nRetorne APENAS JSON válido."""\n    \n    try:\n        msg = client.messages.create(\n            model="claude-haiku-4-5", max_tokens=512,\n            messages=[{"role":"user","content":prompt}]\n        )\n        import json\n        dados = json.loads(msg.content[0].text)\n        return AnaliseResponse(**dados)\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))',
+       glossary:[['FastAPI','framework Python para APIs REST'],['endpoint','ponto de acesso da API'],['RAG','Retrieval-Augmented Generation'],['LangChain','framework para orquestrar LLMs'],['pydantic','biblioteca de validação de dados'],['async/await','programação assíncrona'],['retry','tentar novamente em falha'],['vector database','banco de dados para embeddings']],
+       exercise:'Crie uma API FastAPI com endpoint POST /resumir que recebe um texto, chama o Claude para resumir em 3 bullet points, e retorna JSON estruturado. Teste com curl.'},
+    ],
+    exam:[
+      {q:'O que é um "token" para um LLM?',opts:['Uma senha de acesso','Unidade básica de texto processada (~4 chars)','Um tipo de modelo','Uma requisição à API'],a:1},
+      {q:'Temperatura=0 em uma chamada de LLM significa:',opts:['Modelo mais criativo','Resposta determinística e consistente','Modelo mais lento','Sem limite de tokens'],a:1},
+      {q:'Onde armazenar sua API key com segurança?',opts:['No código Python','Em variável de ambiente','Em um arquivo README','No GitHub público'],a:1},
+      {q:'O que é Few-shot prompting?',opts:['Usar poucos tokens','Fornecer exemplos no prompt para guiar o modelo','Chamar a API poucas vezes','Um modelo de IA pequeno'],a:1},
+      {q:'Chain-of-thought prompting pede ao modelo para:',opts:['Responder em uma palavra','Usar formato JSON','Raciocinar passo a passo antes da resposta','Traduzir o texto'],a:2},
+      {q:'O que é RAG?',opts:['Um tipo de modelo de IA','Técnica que combina busca em documentos com geração do LLM','Um framework Python','Uma métrica de avaliação'],a:1},
+      {q:'Qual modelo Claude é mais indicado para tarefas rápidas e baratas?',opts:['claude-opus','claude-sonnet','claude-haiku','Todos têm o mesmo custo'],a:2},
+      {q:'O que é "alucinação" (hallucination) em LLMs?',opts:['O modelo ficar lento','Modelo gerar informações falsas com confiança','Erro de autenticação','Limite de tokens excedido'],a:1},
+      {q:'Para que serve o "system prompt"?',opts:['Definir o modelo a ser usado','Definir comportamento, tom e restrições do assistente','Autenticar na API','Limitar tokens'],a:1},
+      {q:'FastAPI é usado para:',opts:['Treinar modelos de ML','Criar APIs REST em Python','Fazer visualizações de dados','Gerenciar bancos de dados'],a:1},
+    ]
+  },
+  {
+    id:'m6',color:'#1a1015',emoji:'🚀',
+    title:'Deploy e MLOps',titleEn:'Deploy & MLOps',weeks:4,
+    desc:'Saber treinar modelo não basta — você precisa colocar em produção. Docker, FastAPI e deploy são diferenciais valiosos.',
+    lessons:[
+      {id:'m6l1',title:'Git e GitHub essencial',en:'Git & GitHub Essential',
+       content:'Git é o sistema de controle de versão mais usado no mundo. Commit é um snapshot do código. Branch permite trabalhar em funcionalidades sem afetar o código principal. Merge une branches. Fluxo básico: git add → git commit → git push. .gitignore lista arquivos que não devem ser versionados (senhas, ambientes virtuais, dados grandes). README.md é a porta de entrada do seu projeto. GitHub Actions automatiza testes e deploy.',
+       code:'# Configuração inicial\ngit config --global user.name "Frederico"\ngit config --global user.email "seu@email.com"\n\n# Ciclo diário\ngit status                   # ver mudanças\ngit add .                    # adicionar tudo\ngit commit -m "feat: add preprocessing pipeline"\ngit push origin main\n\n# Branches\ngit checkout -b feature/novo-modelo  # criar e mudar\ngit checkout main                    # voltar\ngit merge feature/novo-modelo        # unir\n\n# .gitignore essencial para ML:\n# __pycache__/\n# .env\n# venv/\n# *.pkl\n# data/raw/',
+       glossary:[['commit','salvar snapshot do código'],['branch','ramo / versão paralela'],['.gitignore','arquivo que lista o que NÃO versionar'],['push','enviar commits ao remoto'],['pull','baixar atualizações'],['clone','copiar repositório'],['fork','cópia de repositório alheio']],
+       exercise:'Crie um repositório no GitHub para seus estudos de IA. Adicione: README.md, .gitignore para Python/ML, e uma pasta notebooks/ com um notebook de exemplo.'},
+      {id:'m6l2',title:'Docker para ML',en:'Docker for ML',
+       content:'Docker empacota seu código, dependências e ambiente em um container — garantindo que funciona em qualquer máquina. Dockerfile descreve como construir a imagem. Por que usar em ML: reprodutibilidade (mesmo ambiente em dev e prod), isolamento (sem conflito de versões), portabilidade (roda em qualquer cloud). docker-compose orquestra múltiplos containers. Volumes permitem que dados persistam. Expose ports para acessar serviços externamente.',
+       code:'# Dockerfile para aplicação ML\nFROM python:3.11-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nEXPOSE 8000\n\nCMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]\n\n# requirements.txt:\n# fastapi==0.104.1\n# uvicorn==0.24.0\n# scikit-learn==1.3.2\n# anthropic==0.8.0\n# numpy==1.26.2\n\n# Comandos:\n# docker build -t meu-app-ml .\n# docker run -p 8000:8000 -e ANTHROPIC_API_KEY=... meu-app-ml',
+       glossary:[['container','ambiente isolado com tudo que o app precisa'],['image','template para criar containers'],['Dockerfile','receita de como construir a imagem'],['docker-compose','orquestrar múltiplos containers'],['volume','armazenamento persistente'],['port mapping','mapear porta do container para o host'],['layer','camada da imagem Docker']],
+       exercise:'Containerize a API FastAPI do módulo anterior. Crie Dockerfile e requirements.txt, build a imagem, rode e teste com curl http://localhost:8000/docs.'},
+      {id:'m6l3',title:'Deploy no Hugging Face Spaces',en:'Deploy on Hugging Face Spaces',
+       content:'Hugging Face Spaces é a plataforma gratuita mais fácil para fazer deploy de demos de ML. Suporta Gradio (interfaces interativas), Streamlit (dashboards), e Docker (APIs). Gradio cria interfaces web com poucas linhas de código. Para deploy: crie conta em huggingface.co, crie um Space, faça upload do código. Para projetos sérios: AWS (SageMaker, Lambda), GCP (Vertex AI, Cloud Run), Azure. Serverless é ideal para APIs com tráfego irregular.',
+       code:'import gradio as gr\nimport anthropic\nimport os\n\nclient = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])\n\ndef analisar_texto(texto):\n    if not texto.strip():\n        return "Por favor, insira um texto."\n    \n    resp = client.messages.create(\n        model="claude-haiku-4-5",\n        max_tokens=256,\n        messages=[{\n            "role": "user",\n            "content": f"Analise o sentimento em 1 frase: {texto}"\n        }]\n    )\n    return resp.content[0].text\n\ninterface = gr.Interface(\n    fn=analisar_texto,\n    inputs=gr.Textbox(label="Texto", lines=3),\n    outputs=gr.Textbox(label="Análise"),\n    title="Análise de Sentimento com Claude"\n)\n\ninterface.launch()',
+       glossary:[['Hugging Face Spaces','plataforma gratuita de deploy de demos ML'],['Gradio','biblioteca para interfaces web de ML'],['Streamlit','framework para dashboards Python'],['serverless','sem servidor fixo — executa sob demanda'],['Cloud Run','serviço GCP para containers serverless'],['Lambda','serviço AWS para funções serverless'],['CI/CD','Integração e Deploy Contínuos']],
+       exercise:'Faça deploy de um Space no Hugging Face com Gradio que usa o Claude para receber texto em português e retornar tradução para inglês com explicação.'},
+      {id:'m6l4',title:'Monitoramento e MLOps básico',en:'Monitoring & Basic MLOps',
+       content:'MLOps é a prática de colocar e manter modelos de ML em produção de forma confiável. Model drift: com o tempo os dados mudam e o modelo fica desatualizado — monitore e retreine. Logging é essencial para diagnóstico. MLflow rastreia experimentos: parâmetros testados, melhor performance, versão dos modelos. Model registry guarda e versiona modelos prontos para produção. Health check endpoint (/health) para monitoramento automático.',
+       code:'import mlflow\nimport mlflow.sklearn\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score\nimport logging\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\ndata = load_iris()\nX_tr, X_te, y_tr, y_te = train_test_split(\n    data.data, data.target, test_size=0.2, random_state=42\n)\n\nwith mlflow.start_run():\n    n_estimators = 100\n    mlflow.log_param("n_estimators", n_estimators)\n    \n    model = RandomForestClassifier(n_estimators=n_estimators, random_state=42)\n    model.fit(X_tr, y_tr)\n    \n    acc = accuracy_score(y_te, model.predict(X_te))\n    mlflow.log_metric("accuracy", acc)\n    mlflow.sklearn.log_model(model, "model")\n    logger.info(f"Acurácia: {acc:.3f}")\n\nprint("mlflow ui → acesse localhost:5000")',
+       glossary:[['MLOps','ML Operations — práticas de produção de ML'],['model drift','degradação do modelo com mudanças nos dados'],['logging','registro de eventos do sistema'],['MLflow','plataforma de rastreamento de experimentos'],['model registry','registro/versionamento de modelos'],['health check','endpoint que verifica se o serviço funciona'],['latency','latência — tempo de resposta'],['A/B testing','comparar duas versões do modelo com usuários']],
+       exercise:'Configure MLflow no seu projeto e rastreie 5 experimentos variando hiperparâmetros do Random Forest. Compare na UI do MLflow (localhost:5000) e identifique o melhor modelo.'},
+    ],
+    exam:[
+      {q:'O que é o comando "git commit"?',opts:['Enviar código ao GitHub','Salvar um snapshot das mudanças localmente','Criar uma branch','Mesclar branches'],a:1},
+      {q:'Por que usar Docker para aplicações ML?',opts:['Torna o modelo mais preciso','Garante reprodutibilidade e portabilidade do ambiente','Substitui o Python','Acelera o treinamento'],a:1},
+      {q:'O que um Dockerfile descreve?',opts:['Os dados de treino','Como construir a imagem do container','O algoritmo de ML','A arquitetura neural'],a:1},
+      {q:'Hugging Face Spaces é usado para:',opts:['Treinar modelos grandes','Deploy e demonstração de modelos de ML de forma fácil','Armazenar dados','Comprar modelos'],a:1},
+      {q:'O que é model drift?',opts:['Um bug no modelo','Degradação da performance com o tempo por mudanças nos dados','O modelo ficar pesado','Overfitting em produção'],a:1},
+      {q:'Para que serve o MLflow?',opts:['Deploy de modelos','Rastrear experimentos, parâmetros e métricas de ML','Criar interfaces web','Gerenciar banco de dados'],a:1},
+      {q:'O que deve constar no .gitignore de um projeto ML?',opts:['O código Python principal','Arquivos .env com senhas e dados brutos grandes','O README','O requirements.txt'],a:1},
+      {q:'Gradio é usado para:',opts:['Treinar modelos','Criar interfaces web interativas para modelos ML','Monitorar produção','Deploy em cloud'],a:1},
+      {q:'O que é um health check endpoint?',opts:['Um endpoint que retreina o modelo','Uma rota que confirma que o serviço está funcionando','Um dashboard de métricas','Um endpoint de autenticação'],a:1},
+      {q:'CI/CD significa:',opts:['Control Interface / Code Deploy','Continuous Integration / Continuous Deployment','Cloud Infrastructure','Container Interface'],a:1},
+    ]
+  },
+  {
+    id:'m7',color:'#1a1510',emoji:'🎯',
+    title:'Projeto Final — Portfólio',titleEn:'Final Project — Portfolio',weeks:4,
+    desc:'Tudo que você aprendeu em um projeto real, documentado em inglês, pronto para mostrar em entrevistas.',
+    lessons:[
+      {id:'m7l1',title:'Definindo seu projeto',en:'Defining Your Project',
+       content:'Seu projeto final deve ser relevante para sua área de atuação. Um bom projeto de portfólio tem: 1) Problema real e bem definido, 2) Dataset real (ou muito realista), 3) Pipeline completo (EDA → modelo → API → deploy), 4) Documentação clara em inglês, 5) Resultado mensurável. Ideias para o seu contexto: Predição de falhas em veículos (dados OBD do PredictOBD), Classificação de leads por probabilidade de conversão (VantCRM), Detecção de anomalias em dados de motor.',
+       code:'"""\nPROJETO: Predição de Manutenção Preventiva de Frotas\nPROBLEMA: Prever quando um veículo precisará de manutenção\n          baseado em dados OBD-II\n\nDATASET:\n- Features: temperatura_motor, rpm, velocidade, carga\n- Target: manutencao_necessaria (0/1)\n\nPIPELINE:\n1. EDA (Exploratory Data Analysis)\n2. Feature engineering\n3. Treinamento (Random Forest + XGBoost)\n4. Avaliação (ROC-AUC, F1)\n5. API FastAPI\n6. Deploy Hugging Face Spaces\n7. README completo em inglês\n\nMÉTRICAS DE SUCESSO:\n- AUC-ROC > 0.85\n- F1-score > 0.80\n- API com latência < 500ms\n"""\nprint("Planejamento aprovado!")',
+       glossary:[['portfolio','portfólio — conjunto de projetos demonstrados'],['pipeline','sequência de etapas do projeto'],['end-to-end','ponta a ponta — do dado bruto ao deploy'],['feature engineering','criar/transformar variáveis'],['MVP','Minimum Viable Product — versão mínima funcional'],['benchmark','referência de comparação de performance']],
+       exercise:'Defina SEU projeto final em inglês: 1) Problema que resolve, 2) Dataset que usará, 3) Features e target, 4) Métricas de sucesso, 5) Stack técnica.'},
+      {id:'m7l2',title:'Desenvolvimento e documentação',en:'Development & Documentation',
+       content:'Organize seu projeto seguindo a estrutura padrão da indústria. Desenvolva em notebooks primeiro (exploração) e depois migre para scripts .py (produção). Escreva testes unitários com pytest. Docstrings em inglês em todas as funções. Type hints tornam o código mais profissional. Versione com Git desde o início. O README é seu cartão de visitas — deve explicar o problema, a solução, como rodar e os resultados.',
+       code:'# Estrutura profissional:\n# meu-projeto-ml/\n# ├── README.md\n# ├── requirements.txt\n# ├── .gitignore\n# ├── data/\n# │   ├── raw/\n# │   └── processed/\n# ├── notebooks/\n# │   ├── 01_eda.ipynb\n# │   └── 02_modeling.ipynb\n# ├── src/\n# │   ├── preprocessing.py\n# │   ├── train.py\n# │   └── evaluate.py\n# ├── api/\n# │   └── main.py\n# └── tests/\n#     └── test_preprocessing.py\n\ndef calculate_fleet_risk(obd_data: dict) -> float:\n    """Calculate maintenance risk score.\n    \n    Args:\n        obd_data: OBD-II sensor readings dict.\n    Returns:\n        Risk score 0.0 (low) to 1.0 (high).\n    """\n    return 0.0',
+       glossary:[['type hints','anotações de tipo em Python'],['pytest','framework de testes em Python'],['unit test','teste unitário'],['docstring','documentação de função/classe'],['modular code','código dividido em funções reutilizáveis'],['refactoring','refatoração — melhorar estrutura sem mudar comportamento']],
+       exercise:'Estruture seu projeto com a estrutura mostrada. Crie os arquivos base, escreva o README em inglês e faça o primeiro commit no GitHub.'},
+      {id:'m7l3',title:'Apresentação e entrevistas técnicas',en:'Presentation & Technical Interviews',
+       content:'Em entrevistas de IA Engineering você vai enfrentar: 1) Perguntas técnicas sobre algoritmos, 2) Code challenges, 3) System design (projete um sistema de ML), 4) Behavioral questions. Ao apresentar seu projeto: comece pelo problema (por que importa?), depois pela solução, depois pelos resultados, e deixe o código para o final. Frases úteis: "Walk me through your approach" = me explique sua abordagem. "How does this scale?" = como escala?',
+       code:'# Perguntas comuns em entrevistas ML:\n\n# 1. "What is the bias-variance tradeoff?"\n#    Bias alto → underfitting (modelo simples)\n#    Variance alta → overfitting (muito sensível ao ruído)\n#    Goal: encontrar equilíbrio\n\n# 2. "How do you handle imbalanced datasets?"\n#    - Oversample (SMOTE)\n#    - Undersample\n#    - Ajustar class_weight\n#    - Usar métricas: F1, AUC\n\n# 3. "Explain Random Forest"\n#    - N árvores em subamostras aleatórias\n#    - Cada árvore vê subset de features\n#    - Voto majoritário das N árvores\n\n# 4. "How would you deploy a ML model?"\n#    pickle/joblib → FastAPI → Docker → Cloud',
+       glossary:[['technical interview','entrevista técnica'],['code challenge','desafio de código ao vivo'],['system design','projeto de arquitetura de sistema'],['behavioral question','pergunta situacional'],['walk me through','me explique passo a passo'],['scalability','escalabilidade'],['production-ready','pronto para produção']],
+       exercise:'Grave um vídeo de 5 minutos em inglês apresentando seu projeto final como se fosse para um recrutador. Cubra: problema, solução, resultados e próximos passos.'},
+      {id:'m7l4',title:'Publicando e continuando',en:'Publishing & Continuing',
+       content:'Depois do projeto final, você tem a base para entrar no mercado. Próximos passos: 1) Contribuir para projetos open source (comece com documentação), 2) Kaggle para praticar, 3) Escrever artigos técnicos (Medium, LinkedIn), 4) Networking: PyData, Meetups de IA, Discord de ML, 5) Deep learning com PyTorch, 6) LLM fine-tuning e embeddings avançados. No Brasil: Pizza de Dados, AI Brazil. Salários de AI Engineer: R$8k–25k/mês dependendo do nível.',
+       code:'# Roadmap pós-conclusão:\n\n# NÍVEL JUNIOR (você agora):\n# ✓ Python avançado\n# ✓ ML com Scikit-learn\n# ✓ APIs com FastAPI\n# ✓ LLMs e Prompt Engineering\n# ✓ Docker e Deploy\n# ✓ Git e GitHub\n\n# NÍVEL PLENO (próximos 12-18 meses):\n# → Deep Learning com PyTorch\n# → Fine-tuning de LLMs (LoRA, PEFT)\n# → Embeddings e bancos vetoriais\n# → Kubernetes básico\n\n# NÍVEL SENIOR (2-3 anos):\n# → Arquitetura de sistemas ML em escala\n# → MLOps avançado (Kubeflow, Airflow)\n# → Liderança técnica\n\n# Recursos:\n# fast.ai, cs231n.stanford.edu, d2l.ai',
+       glossary:[['open source','código aberto'],['Kaggle','plataforma de competições de ML'],['PyTorch','framework de deep learning'],['fine-tuning','ajuste fino de modelo pré-treinado'],['embeddings','representações vetoriais'],['transformer','arquitetura usada em LLMs'],['LoRA','Low-Rank Adaptation — fine-tuning eficiente'],['Kubernetes','orquestrador de containers em escala']],
+       exercise:'Publique seu projeto no GitHub com README completo em inglês. Escreva um post no LinkedIn apresentando o que você construiu, o que aprendeu e o link do repositório.'},
+    ],
+    exam:[
+      {q:'O que torna um projeto de portfólio forte?',opts:['Usar muitas tecnologias','Pipeline completo: problema real → dados → modelo → API → deploy + documentação','Ter muitos arquivos','Usar o algoritmo mais complexo'],a:1},
+      {q:'Qual a estrutura recomendada para um projeto ML profissional?',opts:['Tudo em um único arquivo','Pastas separadas: data/, notebooks/, src/, api/, tests/','Só o notebook Jupyter','Apenas o modelo salvo'],a:1},
+      {q:'O que é o bias-variance tradeoff?',opts:['Uma técnica de regularização','Equilíbrio entre erros sistemáticos (bias) e sensibilidade ao ruído (variance)','Uma métrica de avaliação','Um tipo de dataset'],a:1},
+      {q:'Como responder "How does this scale?" em entrevista?',opts:['Dizer que não sabe','Explicar como a arquitetura suporta crescimento (Docker, cloud, etc.)','Falar do tamanho do dataset','Mencionar a acurácia'],a:1},
+      {q:'Qual o próximo passo após dominar Scikit-learn?',opts:['Aprender Excel','Deep Learning com PyTorch e redes neurais','Voltar para Python básico','Aprender JavaScript'],a:1},
+      {q:'O que é Kaggle?',opts:['Uma cloud de deploy','Plataforma de competições de ML com datasets reais','Um framework Python','Uma ferramenta de MLOps'],a:1},
+      {q:'Type hints em Python servem para:',opts:['Deixar o código mais lento','Aumentar legibilidade e ajudar IDEs a detectar erros de tipo','São obrigatórios em Python 3','Substituem documentação'],a:1},
+      {q:'Ao apresentar um projeto, o que vem primeiro?',opts:['O código','O problema que resolve e por que importa','As métricas de performance','A stack tecnológica'],a:1},
+      {q:'Contribuir para projetos open source é recomendado porque:',opts:['Você ganha dinheiro','Aumenta visibilidade, habilidade e networking real','É obrigatório','Substitui projetos próprios'],a:1},
+      {q:'LoRA é relacionado a:',opts:['Um framework de deploy','Método eficiente de fine-tuning de LLMs','Uma técnica de visualização','Um banco de dados'],a:1},
+    ]
+  }
+];
+
+let state = JSON.parse(localStorage.getItem('aieng_state') || 'null') || {
+  completed: {},
+  examHistory: [],
+  studyDays: [],
+  currentModule: null,
+  totalMinutes: 0
+};
+if(!state.totalMinutes) state.totalMinutes = 0;
+
+let _timerInterval = null;
+let _timerStart = null;
+let _timerLessonId = null;
+
+function startLessonTimer(lid){
+  if(_timerLessonId === lid) return;
+  stopLessonTimer();
+  _timerLessonId = lid;
+  _timerStart = Date.now();
+  _timerInterval = setInterval(()=>{
+    const elapsed = Math.floor((Date.now() - _timerStart) / 60000);
+    const el = document.getElementById('timer-'+lid);
+    if(el) el.textContent = elapsed > 0 ? elapsed+'min' : '';
+  }, 10000);
+}
+
+function stopLessonTimer(){
+  if(_timerInterval){ clearInterval(_timerInterval); _timerInterval = null; }
+  if(_timerStart && _timerLessonId){
+    const mins = Math.floor((Date.now() - _timerStart) / 60000);
+    if(mins > 0){ state.totalMinutes += mins; saveState(); }
+  }
+  _timerStart = null; _timerLessonId = null;
+}
+
+function formatTime(mins){
+  if(mins < 60) return mins+'min';
+  return Math.floor(mins/60)+'h'+(mins%60>0?' '+(mins%60)+'min':'');
+}
+
+function saveState(){localStorage.setItem('aieng_state', JSON.stringify(state));}
+function totalLessons(){return CURRICULUM.reduce((a,m)=>a+m.lessons.length,0);}
+function doneLessons(){return Object.values(state.completed).filter(Boolean).length;}
+function moduleProgress(mod){
+  const done = mod.lessons.filter(l=>state.completed[l.id]).length;
+  return mod.lessons.length ? Math.round(done/mod.lessons.length*100) : 0;
+}
+function globalProgress(){return Math.round(doneLessons()/totalLessons()*100);}
+function calcStreak(){
+  const days = [...new Set(state.studyDays)].sort().reverse();
+  if(!days.length) return 0;
+  const today = new Date().toISOString().split('T')[0];
+  if(days[0] !== today && days[0] !== yesterday()) return 0;
+  let streak = 1;
+  for(let i=1;i<days.length;i++){
+    const d1 = new Date(days[i-1]), d2 = new Date(days[i]);
+    if((d1-d2)/(1000*60*60*24) === 1) streak++;
+    else break;
+  }
+  return streak;
+}
+function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().split('T')[0];}
+function todayStr(){return new Date().toISOString().split('T')[0];}
+function markStudyDay(){const t=todayStr();if(!state.studyDays.includes(t)){state.studyDays.push(t);saveState();}}
+
+function updateUI(){
+  const pct = globalProgress();
+  document.getElementById('global-pct').textContent = pct+'%';
+  document.getElementById('global-bar').style.width = pct+'%';
+  document.getElementById('streak-val').textContent = calcStreak();
+  document.getElementById('hours-val').textContent = formatTime(state.totalMinutes||0);
+  document.getElementById('s-done').textContent = doneLessons();
+  document.getElementById('s-total').textContent = totalLessons();
+  document.getElementById('s-streak').textContent = calcStreak()+'🔥';
+  document.getElementById('s-hours').textContent = formatTime(state.totalMinutes||0);
+  renderModNav();
+  renderModuleCards();
+  renderCalendar();
+  renderContinueButton();
+}
+
+function renderModNav(){
+  const nav = document.getElementById('mod-nav');
+  nav.innerHTML = CURRICULUM.map(m=>{
+    const pct = moduleProgress(m);
+    const done = pct === 100;
+    return `<div class="nav-module">
+      <button class="nav-module-btn ${done?'done':''}" onclick="showModule('${m.id}');if(window.innerWidth<=700)toggleSidebar()">
+        <span class="mod-icon" style="background:${m.color}">${m.emoji}</span>
+        <span style="flex:1;text-align:left">${m.title}</span>
+        <span class="mod-pct">${pct}%</span>
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function renderModuleCards(){
+  const grid = document.getElementById('modules-overview');
+  grid.innerHTML = CURRICULUM.map(m=>{
+    const pct = moduleProgress(m);
+    return `<div class="mod-card" onclick="showModule('${m.id}')">
+      <h3>${m.emoji} ${m.title}</h3>
+      <div class="meta">${m.weeks} semanas · ${m.lessons.length} aulas · ${m.titleEn}</div>
+      <div class="pbar"><div class="pbar-fill" style="width:${pct}%"></div></div>
+      <div class="pct">${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderCalendar(){
+  const grid = document.getElementById('cal-grid');
+  const today = new Date();
+  const days = [];
+  for(let i=59;i>=0;i--){
+    const d = new Date(today);
+    d.setDate(today.getDate()-i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  grid.innerHTML = days.map(d=>{
+    const studied = state.studyDays.includes(d);
+    const isToday = d === todayStr();
+    return `<div class="cal-day ${studied?'studied':''} ${isToday?'today':''}" title="${d}"></div>`;
+  }).join('');
+}
+
+function showView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-module-btn').forEach(b=>b.classList.remove('active'));
+  if(v==='dashboard') document.querySelector('.nav-module-btn').classList.add('active');
+  if(v==='history') renderHistory();
+}
+
+function showModule(modId){
+  const mod = CURRICULUM.find(m=>m.id===modId);
+  if(!mod) return;
+  state.currentModule = modId;
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-module').classList.add('active');
+  renderModule(mod);
+}
+
+function renderModule(mod){
+  const pct = moduleProgress(mod);
+  const examPassed = state.examHistory.some(e=>e.modId===mod.id && e.passed);
+  document.getElementById('module-content').innerHTML = `
+    <div class="mod-header">
+      <h2>${mod.emoji} ${mod.title}</h2>
+      <div class="meta">${mod.weeks} semanas · ${mod.lessons.length} aulas de 1h · <em>${mod.titleEn}</em></div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:14px">${mod.desc}</p>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="pbar" style="flex:1"><div class="pbar-fill" style="width:${pct}%"></div></div>
+        <span style="font-size:13px;color:var(--accent)">${pct}%</span>
+        ${pct>=80 ? `<button class="btn btn-primary" onclick="startExam('${mod.id}')">${examPassed?'✓ Refazer prova':'📝 Fazer prova'}</button>` : `<span style="font-size:12px;color:var(--muted)">📝 Prova disponível com 80% (${pct}% concluído)</span>`}
+      </div>
+    </div>
+    <div class="lessons-list">
+      ${mod.lessons.map((l,i)=>renderLesson(l,i,mod)).join('')}
+    </div>`;
+}
+
+function renderLesson(l,i,mod){
+  const done = !!state.completed[l.id];
+  return `<div class="lesson-item ${done?'done':''}" id="li-${l.id}">
+    <div class="lesson-cb ${done?'checked':''}" onclick="toggleLesson('${l.id}','${mod.id}')"></div>
+    <div class="lesson-info">
+      <div class="lesson-title">Aula ${i+1}: ${l.title}</div>
+      <div class="lesson-sub">${l.en} · 1h</div>
+      <div class="lesson-tags">
+        <span class="tag en">🌐 ${l.en}</span>
+        <span class="tag ex">💡 Exercício incluso</span>
+      </div>
+      <div class="lesson-detail" id="ld-${l.id}">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><span style="font-size:11px;color:var(--accent);font-family:var(--mono)" id="timer-${l.id}"></span></div>
+        <h4>📖 Conteúdo</h4>
+        <p>${l.content}</p>
+        <h4>💻 Código de exemplo</h4>
+        <div class="code-block">${escHtml(l.code)}</div>
+        <h4>🌐 Glossário EN → PT</h4>
+        <div class="glossary">${l.glossary.map(([en,pt])=>`<div class="glos-item"><span class="glos-en">${en}</span><span class="glos-pt">→ ${pt}</span></div>`).join('')}</div>
+        <h4>🎯 Exercício do dia</h4>
+        <div class="exercise-box"><strong>Desafio:</strong> ${l.exercise}</div>
+      </div>
+    </div>
+    <button class="lesson-toggle" onclick="toggleDetail('${l.id}')">Ver conteúdo ▼</button>
+  </div>`;
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function toggleDetail(lid){
+  const el = document.getElementById('ld-'+lid);
+  const item = el.closest('.lesson-item');
+  const btn = item.querySelector('.lesson-toggle');
+  const open = el.classList.toggle('open');
+  btn.textContent = open ? 'Fechar ▲' : 'Ver conteúdo ▼';
+  if(open){
+    const lid = el.id.replace('ld-','');
+    startLessonTimer(lid);
+  } else {
+    stopLessonTimer();
+    updateUI();
+  }
+}
+
+function toggleLesson(lid, modId){
+  state.completed[lid] = !state.completed[lid];
+  if(state.completed[lid]) markStudyDay();
+  saveState();
+  updateUI();
+  const mod = CURRICULUM.find(m=>m.id===modId);
+  renderModule(mod);
+  showToast(state.completed[lid] ? '✅ Aula concluída!' : 'Aula desmarcada');
+  if(state.completed[lid]) checkStorageWarning();
+}
+
+function startExam(modId){
+  const mod = CURRICULUM.find(m=>m.id===modId);
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-exam').classList.add('active');
+  renderExam(mod);
+}
+
+let examAnswers = {};
+let examMod = null;
+
+function renderExam(mod){
+  examAnswers = {};
+  examMod = mod;
+  document.getElementById('exam-content').innerHTML = `
+    <div class="exam-container">
+      <h2>📝 Prova: ${mod.title}</h2>
+      <p class="sub">10 perguntas · Nota mínima: 70% · Responda com calma.</p>
+      ${mod.exam.map((q,qi)=>`
+        <div class="question-block">
+          <p>${qi+1}. ${q.q}</p>
+          <div class="options">
+            ${q.opts.map((o,oi)=>`
+              <button class="option-btn" onclick="selectOption(${qi},${oi},this)">${o}</button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+      <div style="margin-top:24px;display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="submitExam()">Enviar respostas</button>
+        <button class="btn btn-secondary" onclick="showModule('${mod.id}')">Cancelar</button>
+      </div>
+    </div>`;
+}
+
+function selectOption(qi,oi,btn){
+  const block = btn.closest('.question-block');
+  block.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  examAnswers[qi] = oi;
+}
+
+function submitExam(){
+  if(Object.keys(examAnswers).length < examMod.exam.length){
+    showToast('⚠️ Responda todas as perguntas!'); return;
+  }
+  let correct = 0;
+  examMod.exam.forEach((q,qi)=>{if(examAnswers[qi]===q.a) correct++;});
+  const score = Math.round(correct/examMod.exam.length*100);
+  const passed = score >= 70;
+  
+  state.examHistory.push({
+    modId:examMod.id,modTitle:examMod.title,
+    score,passed,date:new Date().toLocaleDateString('pt-BR'),
+    correct,total:examMod.exam.length
+  });
+  saveState();
+  
+  document.getElementById('exam-content').innerHTML = `
+    <div class="exam-container">
+      <div class="exam-result">
+        <div class="score ${passed?'pass':'fail'}">${score}%</div>
+        <p>${passed ? '🎉 Parabéns! Você passou!' : '😅 Revise o conteúdo e tente novamente.'}</p>
+        <p style="font-size:13px;color:var(--muted)">${correct} de ${examMod.exam.length} respostas corretas</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
+          ${!passed ? `<button class="btn btn-primary" onclick="startExam('${examMod.id}')">🔄 Refazer prova</button>` : ''}
+          <button class="btn btn-secondary" onclick="showModule('${examMod.id}')">Voltar ao módulo</button>
+          <button class="btn btn-secondary" onclick="showView('dashboard')">Dashboard</button>
+        </div>
+      </div>
+    </div>`;
+  updateUI();
+  showToast(passed ? '🎉 Aprovado!' : '📚 Continue estudando!');
+}
+
+function renderHistory(){
+  const list = document.getElementById('history-list');
+  if(!state.examHistory.length){
+    list.innerHTML = '<p style="color:var(--muted);font-size:14px">Nenhuma prova realizada ainda. Conclua um módulo para desbloquear a prova.</p>';
+    return;
+  }
+  list.innerHTML = [...state.examHistory].reverse().map(e=>`
+    <div class="history-item">
+      <div class="history-badge ${e.passed?'pass':'fail'}">${e.score}%</div>
+      <div class="history-info">
+        <h4>${e.modTitle}</h4>
+        <p>${e.correct} de ${e.total} corretas · ${e.date} · ${e.passed?'✅ Aprovado':'❌ Reprovado'}</p>
+      </div>
+      <button class="btn btn-secondary" onclick="startExam('${e.modId}')" style="flex-shrink:0">Refazer</button>
+    </div>`).join('');
+}
+
+function showToast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2500);
+}
+
+function exportData(){
+  const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ai_engineer_progress.json';
+  a.click();
+  showToast('✅ Progresso exportado!');
+}
+
+function importData(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = ev=>{
+    try{
+      state = JSON.parse(ev.target.result);
+      saveState(); updateUI();
+      showToast('✅ Progresso importado!');
+    }catch{showToast('❌ Arquivo inválido');}
+  };
+  r.readAsText(file);
+}
+
+function checkStorageWarning(){
+  const done = doneLessons();
+  const lastWarn = localStorage.getItem('aieng_last_warn_export');
+  const today = todayStr();
+  if(done > 0 && done % 5 === 0 && lastWarn !== today){
+    localStorage.setItem('aieng_last_warn_export', today);
+    setTimeout(()=>{
+      showToast('💾 Você tem ' + done + ' aulas concluídas — exporte seu progresso para não perder!');
+    }, 1500);
+  }
+}
+
+function renderContinueButton(){
+  const area = document.getElementById('continue-btn-area');
+  if(!area) return;
+  for(const mod of CURRICULUM){
+    for(const lesson of mod.lessons){
+      if(!state.completed[lesson.id]){
+        area.innerHTML = `<div style="background:var(--surface);border:1px solid var(--accent)44;border-radius:10px;padding:16px 20px;display:flex;align-items:center;gap:16px">
+          <span style="font-size:24px">${mod.emoji}</span>
+          <div style="flex:1">
+            <div style="font-size:11px;color:var(--accent);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px">Próxima aula</div>
+            <div style="font-size:15px;font-weight:600;margin-top:2px">${lesson.title}</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">${mod.title}</div>
+          </div>
+          <button class="btn btn-primary" onclick="showModule('${mod.id}')">▶ Continuar</button>
+        </div>`;
+        return;
+      }
+    }
+  }
+  area.innerHTML = `<div style="background:var(--surface);border:1px solid var(--accent)44;border-radius:10px;padding:16px 20px;text-align:center;color:var(--accent);font-weight:600">🎉 Parabéns! Todas as aulas concluídas!</div>`;
+}
+
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('open');
+}
+
+updateUI();
+</script>
+</body>
+</html>
