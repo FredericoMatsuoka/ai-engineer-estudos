@@ -78,6 +78,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .glos-en{color:#6ab0f5;font-family:var(--mono);min-width:120px}
 .glos-pt{color:var(--text)}
 .exercise-box{background:#0d1f1a;border:1px solid var(--accent)44;border-radius:6px;padding:12px;font-size:13px}
+.quiz-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:14px}
+.quiz-box h4{font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.quiz-q{margin-bottom:14px}
+.quiz-q p{font-size:13px;font-weight:600;margin-bottom:8px;line-height:1.5}
+.quiz-q .opts{display:flex;flex-direction:column;gap:5px}
+.quiz-opt{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:5px;cursor:pointer;text-align:left;font-size:12px;font-family:var(--font);transition:all .2s}
+.quiz-opt:hover:not(:disabled){border-color:var(--accent);background:#0d2420}
+.quiz-opt.correct{border-color:var(--pass);background:#0d2420;color:var(--pass)}
+.quiz-opt.wrong{border-color:var(--danger);background:#2a0d0d;color:var(--danger)}
+.quiz-opt.selected{border-color:var(--accent)}
+.quiz-score{text-align:center;padding:10px;font-size:14px;font-weight:700;font-family:var(--mono);border-radius:6px;margin-top:10px}
+.quiz-score.pass{background:#0d2420;color:var(--pass)}
+.quiz-score.fail{background:#2a0d0d;color:var(--danger)}
+.quiz-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:10px;font-family:var(--mono)}
+.quiz-badge.pass{background:#0d2420;color:var(--pass)}
+.quiz-badge.fail{background:#2a0d0d;color:var(--danger)}
 .exercise-box strong{color:var(--accent);display:block;margin-bottom:4px}
 .exam-container{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px}
 .exam-container h2{font-size:18px;font-weight:700;margin-bottom:6px}
@@ -215,42 +231,98 @@ const CURRICULUM = [
        content:'Em Python, você não precisa declarar o tipo da variável — o interpretador descobre sozinho (tipagem dinâmica / dynamic typing). Os tipos mais usados são: int (inteiro), float (decimal), str (texto), bool (verdadeiro/falso). A atribuição usa o sinal =. Você pode usar type() para descobrir o tipo de qualquer valor. Entender tipos é fundamental porque erros de tipo (TypeError) são dos mais comuns em código Python. Cada tipo tem comportamentos diferentes: strings podem ser concatenadas com +, inteiros podem ser somados, booleanos controlam o fluxo lógico. Preste atenção na diferença entre = (atribuição) e == (comparação).',
        code:'# Variáveis — Variables\nnome = "Frederico"      # str (texto / text)\nidade = 28             # int (inteiro / integer)\naltura = 1.80          # float (decimal)\nativo = True           # bool (verdadeiro / true)\n\nprint(type(nome))      # <class \'str\'>\nprint(type(idade))     # <class \'int\'>\n\n# Conversão de tipos — Type casting\nidade_texto = str(idade)   # "28"\nnota = float("9.5")        # 9.5',
        glossary:[['variable','variável'],['integer','inteiro'],['string','texto / cadeia de caracteres'],['boolean','booleano (verdadeiro/falso)'],['type casting','conversão de tipo'],['dynamic typing','tipagem dinâmica'],['assignment','atribuição']],
-       exercise:'Crie variáveis para armazenar: seu nome, sua idade, sua altura e se você já estudou Python antes. Imprima cada uma com print() e use type() para verificar os tipos.'},
+       exercise:'Crie variáveis para armazenar: seu nome, sua idade, sua altura e se você já estudou Python antes. Imprima cada uma com print() e use type() para verificar os tipos.',
+       quiz:[
+         {q:'Qual função mostra o tipo de uma variável em Python?',opts:['show()','print()','type()','typeof()'],a:2},
+         {q:'Qual tipo Python representa verdadeiro/falso?',opts:['int','str','bool','bit'],a:2},
+         {q:'Como converter o número 7 para string?',opts:['string(7)','str(7)','toString(7)','(str)7'],a:1},
+         {q:'O que acontece se você somar "3" + "4" em Python?',opts:['7','34','Erro de tipo','None'],a:1},
+         {q:'Qual é a diferença entre = e == em Python?',opts:['Nenhuma','= compara, == atribui','= atribui valor, == compara valores','São usados apenas em loops'],a:2},
+       ]},
       {id:'m1l2',title:'Operadores e expressões',en:'Operators & Expressions',
        content:'Operadores são símbolos que realizam operações entre valores. Aritméticos: + (soma), - (subtração), * (multiplicação), / (divisão), // (divisão inteira), % (módulo/resto), ** (potência). Comparação: ==, !=, >, <, >=, <=. Lógicos: and, or, not. Python segue a ordem matemática (PEMDAS): parênteses primeiro, depois potências, multiplicação/divisão, adição/subtração. O operador % (módulo) é muito útil para saber se um número é par (n % 2 == 0). Expressões retornam um valor — você pode usá-las dentro de print() ou atribuir a variáveis.',
        code:'# Aritméticos — Arithmetic\nprint(10 + 3)   # 13\nprint(10 / 3)   # 3.333...\nprint(10 // 3)  # 3 (divisão inteira / floor division)\nprint(10 % 3)   # 1 (resto / remainder)\nprint(2 ** 8)   # 256 (potência / power)\n\n# Comparação — Comparison\nprint(10 > 5)   # True\nprint(10 == 10) # True\n\n# Lógicos — Logical\nprint(True and False)  # False\nprint(True or False)   # True\nprint(not True)        # False',
        glossary:[['operator','operador'],['expression','expressão'],['modulo','módulo / resto da divisão'],['floor division','divisão inteira'],['exponentiation','potenciação'],['comparison','comparação'],['logical operator','operador lógico']],
-       exercise:'Escreva um programa que calcule: 1) a área de um retângulo (base=7, altura=4), 2) se um número é par usando %, 3) a potência 2^10.'},
+       exercise:'Escreva um programa que calcule: 1) a área de um retângulo (base=7, altura=4), 2) se um número é par usando %, 3) a potência 2^10.',
+       quiz:[
+         {q:'Qual operador calcula potência em Python?',opts:['^','**','pow','exp'],a:1},
+         {q:'O que retorna 17 % 5?',opts:['3','2','1','0'],a:1},
+         {q:'Qual o resultado de 10 // 3 em Python?',opts:['3.33','3','4','1'],a:1},
+         {q:'O que "and" faz entre dois booleanos?',opts:['Retorna True se pelo menos um for True','Retorna True somente se ambos forem True','Inverte o valor','Compara números'],a:1},
+         {q:'Qual a precedência correta em Python?',opts:['Da esquerda para direita sempre','Parênteses > Potência > * / > + -','+ - > * / > **','Todas as operações têm a mesma prioridade'],a:1},
+       ]},
       {id:'m1l3',title:'Condicionais: if, elif, else',en:'Conditionals',
        content:'Condicionais permitem que seu programa tome decisões. A estrutura básica é if (se) → elif (senão se) → else (senão). Python usa indentação (4 espaços) para definir blocos de código — não usa chaves {} como C ou Java. Isso é crítico: erro de indentação (IndentationError) é muito comum para iniciantes. Você pode aninhar condicionais (nested conditionals), mas evite mais de 2 níveis. O operador ternário permite escrever condicionais em uma linha: valor = "par" if n % 2 == 0 else "ímpar".',
        code:'nota = 75\n\nif nota >= 90:\n    print("Aprovado com louvor")\nelif nota >= 70:\n    print("Aprovado")\nelif nota >= 50:\n    print("Recuperação")\nelse:\n    print("Reprovado")\n\n# Ternário — Ternary operator\nresultado = "par" if nota % 2 == 0 else "ímpar"\nprint(f"A nota {nota} é {resultado}")',
        glossary:[['conditional','condicional'],['indentation','indentação'],['nested','aninhado'],['ternary operator','operador ternário'],['block','bloco de código'],['boolean expression','expressão booleana']],
-       exercise:'Crie um programa que receba uma temperatura e diga: abaixo de 15°C = "frio", 15-25 = "agradável", 25-35 = "quente", acima de 35 = "muito quente".'},
+       exercise:'Crie um programa que receba uma temperatura e diga: abaixo de 15°C = "frio", 15-25 = "agradável", 25-35 = "quente", acima de 35 = "muito quente".',
+       quiz:[
+         {q:'O que causa IndentationError em Python?',opts:['Usar parênteses errados','Esquecer de indentar o bloco após if/for/def','Usar variável não declarada','Dividir por zero'],a:1},
+         {q:'Como escrever if-else em uma linha (ternário)?',opts:['"sim" if x>0 else "não"','if x>0 then "sim" else "não"','x>0 ? "sim" : "não"','(x>0) ? "sim" | "não"'],a:0},
+         {q:'Quantos elif você pode ter em um bloco if?',opts:['Apenas 1','No máximo 3','Ilimitados','Apenas se não tiver else'],a:2},
+         {q:'O que elif significa?',opts:['else if — condição alternativa','end if — encerrar o if','error if — tratar erro','equal if — igualdade'],a:0},
+         {q:'O bloco else em um if executa quando:',opts:['Sempre','Nunca','Nenhuma condição anterior foi verdadeira','Ocorre um erro'],a:2},
+       ]},
       {id:'m1l4',title:'Loops: for e while',en:'Loops: for & while',
        content:'Loops permitem repetir código automaticamente. O for itera sobre sequências (listas, strings, ranges). O while repete enquanto uma condição for verdadeira — cuidado com loops infinitos! range(start, stop, step) gera sequências numéricas. break sai do loop imediatamente. continue pula para a próxima iteração. enumerate() retorna índice + valor ao iterar. Em IA, loops são usados constantemente — para processar datasets, treinar modelos por epochs, iterar sobre predições.',
        code:'# For loop\nfor i in range(5):\n    print(i)  # 0,1,2,3,4\n\nfruits = ["maçã", "banana", "uva"]\nfor i, fruit in enumerate(fruits):\n    print(f"{i}: {fruit}")\n\n# While loop\ncontador = 0\nwhile contador < 3:\n    print(f"Contagem: {contador}")\n    contador += 1\n\n# Break e continue\nfor n in range(10):\n    if n == 3: continue\n    if n == 7: break\n    print(n)',
        glossary:[['loop','laço / repetição'],['iteration','iteração'],['range','intervalo'],['break','interromper'],['continue','continuar / pular'],['enumerate','enumerar'],['infinite loop','loop infinito'],['epoch','época (ciclo de treino em IA)']],
-       exercise:'Use um loop para calcular a soma de todos os números de 1 a 100. Depois, use outro loop para imprimir apenas os números pares entre 1 e 20.'},
+       exercise:'Use um loop para calcular a soma de todos os números de 1 a 100. Depois, use outro loop para imprimir apenas os números pares entre 1 e 20.',
+       quiz:[
+         {q:'O que range(3) gera?',opts:['[1,2,3]','[0,1,2]','[0,1,2,3]','[3]'],a:1},
+         {q:'O que o comando break faz dentro de um loop?',opts:['Pausa o loop por 1 segundo','Pula para a próxima iteração','Sai do loop imediatamente','Reinicia o loop'],a:2},
+         {q:'O que continue faz em um loop?',opts:['Encerra o loop','Pula para a próxima iteração sem executar o resto do bloco','Repete a iteração atual','Pausa o loop'],a:1},
+         {q:'Qual é o risco do while True?',opts:['Não existe risco','Usar mais memória que o for','Criar um loop infinito se não houver break','Ser mais lento que o for'],a:2},
+         {q:'O que enumerate() retorna ao iterar uma lista?',opts:['Apenas os valores','Apenas os índices','Tuplas de (índice, valor)','Um dicionário'],a:2},
+       ]},
       {id:'m1l5',title:'Funções e escopo',en:'Functions & Scope',
        content:'Funções são blocos de código reutilizáveis definidos com def. Elas podem receber parâmetros (inputs) e retornar valores com return. Se não tiver return, retornam None. Parâmetros podem ter valores padrão (default values). Você pode passar argumentos por nome (keyword arguments) ou por posição. Escopo: variáveis criadas dentro de uma função existem apenas lá (escopo local). Docstrings (""" """) documentam o que a função faz — use sempre. Em IA, você vai criar centenas de funções para preprocessar dados, avaliar modelos, etc.',
        code:'def calcular_imc(peso, altura):\n    """Calcula o IMC. / Calculates BMI."""\n    imc = peso / (altura ** 2)\n    return round(imc, 2)\n\nresultado = calcular_imc(80, 1.75)\nprint(f"IMC: {resultado}")  # IMC: 26.12\n\ndef saudar(nome, idioma="pt"):\n    if idioma == "pt":\n        return f"Olá, {nome}!"\n    return f"Hello, {nome}!"\n\nprint(saudar("Fred"))         # Olá, Fred!\nprint(saudar("Fred", "en"))  # Hello, Fred!\n\ndef somar(*numeros):\n    return sum(numeros)\n\nprint(somar(1, 2, 3, 4))  # 10',
        glossary:[['function','função'],['parameter','parâmetro'],['argument','argumento'],['return','retornar / retorno'],['scope','escopo'],['local scope','escopo local'],['global scope','escopo global'],['default value','valor padrão'],['docstring','documentação da função']],
-       exercise:'Crie uma função que receba uma lista de notas e retorne: a média, a maior nota e a menor nota. Teste com [7.5, 8.0, 6.5, 9.0, 5.5].'},
+       exercise:'Crie uma função que receba uma lista de notas e retorne: a média, a maior nota e a menor nota. Teste com [7.5, 8.0, 6.5, 9.0, 5.5].',
+       quiz:[
+         {q:'O que uma função sem return retorna?',opts:['0','""','None','Gera um erro'],a:2},
+         {q:'O que são *args em uma função Python?',opts:['Argumentos obrigatórios','Permite receber qualquer número de argumentos posicionais','Argumentos de palavra-chave','Argumentos tipados'],a:1},
+         {q:'Qual é o escopo de uma variável criada dentro de uma função?',opts:['Global — acessível em todo o código','Local — existe apenas dentro da função','Depende do tipo da variável','Acessível apenas em loops'],a:1},
+         {q:'O que é uma docstring?',opts:['Um comentário com #','String de documentação entre """ """ que descreve a função','Um tipo de variável','Um módulo Python'],a:1},
+         {q:'Como definir um parâmetro com valor padrão em Python?',opts:['def f(x = 10)','def f(x: 10)','def f(x default 10)','def f(x | 10)'],a:0},
+       ]},
       {id:'m1l6',title:'Listas e dicionários',en:'Lists & Dictionaries',
        content:'Listas (lists) são coleções ordenadas e mutáveis. Dicionários (dictionaries) são coleções de pares chave:valor. São as estruturas de dados mais usadas em Python e em IA. Listas: append() adiciona, remove() remove, pop() remove e retorna, len() conta, sorted() ordena. List comprehension é uma forma elegante de criar listas: [x*2 for x in range(10)]. Dicionários: dict[key] acessa, dict.get(key) acessa sem erro, dict.keys(), dict.values(), dict.items(). Em IA, datasets inteiros são representados como listas de dicionários.',
        code:'# Listas — Lists\nnotas = [7.5, 8.0, 6.5, 9.0]\nnotas.append(8.5)\nprint(notas[0])   # primeiro\nprint(notas[-1])  # último\nprint(sorted(notas))\n\n# List comprehension\npares = [x for x in range(20) if x % 2 == 0]\nprint(pares)\n\n# Dicionários — Dictionaries\nmodelo = {\n    "nome": "Random Forest",\n    "acuracia": 0.94,\n    "parametros": 100\n}\nprint(modelo["nome"])\nprint(modelo.get("versao", "N/A"))  # N/A sem erro\n\nfor chave, valor in modelo.items():\n    print(f"{chave}: {valor}")',
        glossary:[['list','lista'],['dictionary','dicionário'],['key','chave'],['value','valor'],['index','índice'],['list comprehension','compreensão de lista'],['mutable','mutável'],['immutable','imutável']],
-       exercise:'Crie um dicionário representando um aluno com nome, notas (lista), e curso. Calcule a média das notas usando list comprehension e adicione ao dicionário.'},
+       exercise:'Crie um dicionário representando um aluno com nome, notas (lista), e curso. Calcule a média das notas usando list comprehension e adicione ao dicionário.',
+       quiz:[
+         {q:'Como acessar a chave "nome" de um dicionário sem gerar erro se não existir?',opts:['dict["nome"]','dict.get("nome")','dict.find("nome")','dict.key("nome")'],a:1},
+         {q:'O que é list comprehension?',opts:['Uma forma de copiar listas','Sintaxe compacta para criar listas: [expr for x in iter]','Um método de ordenação','Uma biblioteca Python'],a:1},
+         {q:'Qual método adiciona um item ao final de uma lista?',opts:['add()','push()','append()','insert()'],a:2},
+         {q:'O que dict.items() retorna?',opts:['Apenas as chaves','Apenas os valores','Pares de (chave, valor)','O tamanho do dicionário'],a:2},
+         {q:'Qual é a diferença entre lista e tupla em Python?',opts:['Não há diferença','Lista é mutável; tupla é imutável','Tupla aceita mais tipos','Lista é mais rápida'],a:1},
+       ]},
       {id:'m1l7',title:'Orientação a objetos (OOP)',en:'Object-Oriented Programming',
        content:'OOP organiza código em classes — moldes para criar objetos. Uma classe define atributos (dados) e métodos (funções). __init__ é o construtor — roda ao criar um objeto. self representa o próprio objeto dentro da classe. Herança permite que uma classe herde de outra. Em IA e ML, você vai usar classes o tempo todo: modelos do Scikit-learn são classes, redes neurais do PyTorch herdam de nn.Module. Encapsulamento protege dados. Polimorfismo permite que objetos de classes diferentes respondam ao mesmo método.',
        code:'class ModeloML:\n    """Representa um modelo de machine learning."""\n    \n    def __init__(self, nome, tipo):\n        self.nome = nome\n        self.tipo = tipo\n        self.treinado = False\n    \n    def treinar(self, dados):\n        print(f"Treinando {self.nome}...")\n        self.treinado = True\n        return self\n    \n    def prever(self, entrada):\n        if not self.treinado:\n            raise Exception("Modelo não treinado!")\n        return f"Previsão para: {entrada}"\n    \n    def __str__(self):\n        return f"{self.nome} ({self.tipo})"\n\nmodelo = ModeloML("RandomForest", "classificação")\nprint(modelo)\nmodelo.treinar([1,2,3])\nprint(modelo.prever("novo dado"))',
        glossary:[['class','classe'],['object','objeto'],['instance','instância'],['method','método'],['attribute','atributo'],['constructor','construtor'],['inheritance','herança'],['encapsulation','encapsulamento'],['polymorphism','polimorfismo'],['self','referência ao próprio objeto']],
-       exercise:'Crie uma classe Calculadora com métodos somar, subtrair, multiplicar e dividir. Adicione um atributo historico que guarda todas as operações realizadas.'},
+       exercise:'Crie uma classe Calculadora com métodos somar, subtrair, multiplicar e dividir. Adicione um atributo historico que guarda todas as operações realizadas.',
+       quiz:[
+         {q:'O que é __init__ em uma classe Python?',opts:['Um método privado','O destrutor','O construtor, executado ao criar o objeto','Um método estático'],a:2},
+         {q:'O que self representa dentro de uma classe?',opts:['A classe em si','A instância atual do objeto','Uma variável global','O módulo Python'],a:1},
+         {q:'O que é herança em OOP?',opts:['Copiar atributos entre variáveis','Uma classe filha herda atributos e métodos da classe pai','Encapsular dados privados','Criar múltiplos objetos iguais'],a:1},
+         {q:'Por que redes neurais PyTorch herdam de nn.Module?',opts:['Para usar mais memória','Para ganhar os métodos de treinamento e parâmetros do framework','Por exigência da linguagem','Para ser mais rápido'],a:1},
+         {q:'O que é encapsulamento em OOP?',opts:['Herdar de outra classe','Proteger dados internos e expor apenas o necessário','Criar múltiplos objetos','Converter tipos de dados'],a:1},
+       ]},
       {id:'m1l8',title:'Arquivos e tratamento de erros',en:'Files & Error Handling',
        content:'Ler e escrever arquivos é essencial em IA — datasets vêm de CSVs, JSONs, TXTs. Use open() com with (context manager) — garante que o arquivo é fechado mesmo se der erro. Modos: "r" (leitura), "w" (escrita), "a" (append), "rb"/"wb" (binário). JSON é o formato mais comum para configurações e dados estruturados. Tratamento de erros com try/except evita que seu programa quebre. Tipos comuns: FileNotFoundError, ValueError, TypeError, KeyError, IndexError. finally executa sempre, com ou sem erro.',
        code:'import json\n\n# Escrevendo — Writing\nwith open("dados.txt", "w", encoding="utf-8") as f:\n    f.write("Linha 1\\n")\n\n# Lendo — Reading\nwith open("dados.txt", "r", encoding="utf-8") as f:\n    conteudo = f.read()\n\n# JSON\nconfig = {"modelo": "rf", "n_estimators": 100}\nwith open("config.json", "w") as f:\n    json.dump(config, f, indent=2)\n\n# Try/Except\ntry:\n    resultado = 10 / 0\nexcept ZeroDivisionError as e:\n    print(f"Erro: {e}")\nexcept Exception as e:\n    print(f"Erro inesperado: {e}")\nfinally:\n    print("Sempre executa")',
        glossary:[['file handling','manipulação de arquivos'],['exception','exceção / erro'],['try/except','tentar / capturar'],['context manager','gerenciador de contexto'],['JSON','formato de dados estruturado'],['encoding','codificação de caracteres'],['raise','lançar um erro'],['finally','sempre executa']],
-       exercise:'Crie um programa que leia uma lista de números de um arquivo TXT (um por linha), calcule a média e salve o resultado em um arquivo JSON. Use try/except para tratar erros.'},
+       exercise:'Crie um programa que leia uma lista de números de um arquivo TXT (um por linha), calcule a média e salve o resultado em um arquivo JSON. Use try/except para tratar erros.',
+       quiz:[
+         {q:'Por que usar "with open()" em vez de "open()" diretamente?',opts:['É mais rápido','Garante que o arquivo é fechado automaticamente, mesmo com erro','Permite ler e escrever ao mesmo tempo','Funciona apenas com JSON'],a:1},
+         {q:'Qual modo abre um arquivo para ADICIONAR conteúdo sem apagar o existente?',opts:['"r"','"w"','"a"','"x"'],a:2},
+         {q:'O que o bloco finally em try/except faz?',opts:['Executa apenas se não houver erro','Executa apenas se houver erro','Executa sempre, com ou sem erro','Cancela a exceção'],a:2},
+         {q:'Como salvar um dicionário Python em formato JSON?',opts:['json.write(dict, f)','json.dump(dict, f)','f.write(dict)','json.save(dict, f)'],a:1},
+         {q:'Qual exceção é lançada ao tentar abrir um arquivo que não existe?',opts:['IOError','FileNotFoundError','ValueError','IndexError'],a:1},
+       ]},
     ],
     exam:[
       {q:'O que é tipagem dinâmica em Python?',opts:['Você deve declarar o tipo de cada variável','O interpretador descobre o tipo automaticamente','Tipos não existem em Python','Variáveis não podem mudar de tipo'],a:1},
@@ -274,22 +346,50 @@ const CURRICULUM = [
        content:'A maior parte do vocabulário técnico de programação é em inglês. Termos essenciais: function (função), variable (variável), array (vetor/lista), loop (laço), condition (condição), parameter (parâmetro), return (retorno), class (classe), object (objeto), method (método). Quando ler erros em inglês: "is not defined" = não foi definido, "index out of range" = índice fora do intervalo, "expected X got Y" = esperava X mas recebeu Y. Ler mensagens de erro corretamente é metade da solução do problema.',
        code:'# Leia este código em voz alta em inglês:\ndef calculate_average(numbers):\n    total = sum(numbers)\n    count = len(numbers)\n    return total / count\n\n# Common error messages — Mensagens comuns:\n# NameError: name \'x\' is not defined\n#   → variável não foi criada\n# TypeError: unsupported operand\n#   → tipos incompatíveis\n# IndexError: list index out of range\n#   → índice além do tamanho da lista\n# KeyError: \'nome\'\n#   → chave não existe no dicionário',
        glossary:[['debug','depurar / encontrar erros'],['deploy','implantar / publicar'],['repository','repositório (pasta do projeto)'],['commit','salvar versão no Git'],['branch','ramo / versão paralela'],['merge','mesclar / unir'],['pull request','solicitação de revisão de código'],['documentation','documentação'],['dependency','dependência (biblioteca necessária)']],
-       exercise:'Leia a documentação oficial do Python para a função sorted() em inglês (docs.python.org) e escreva em português o que ela faz, quais parâmetros aceita e 2 exemplos de uso.'},
+       exercise:'Leia a documentação oficial do Python para a função sorted() em inglês (docs.python.org) e escreva em português o que ela faz, quais parâmetros aceita e 2 exemplos de uso.',
+       quiz:[
+         {q:'O que significa "index out of range" em Python?',opts:['Variável não definida','Índice além do tamanho da lista','Erro de tipo','Loop infinito'],a:1},
+         {q:'O que "deprecated" significa em documentação técnica?',opts:['Recomendado','Novo recurso','Obsoleto, não deve ser usado','Experimental'],a:2},
+         {q:'Como se lê "repository" em português técnico?',opts:['Biblioteca','Repositório (pasta do projeto no Git)','Arquivo','Módulo'],a:1},
+         {q:'O que significa "pull request"?',opts:['Puxar dados de uma API','Solicitação de revisão de código antes de fazer merge','Fazer download do repositório','Atualizar dependências'],a:1},
+         {q:'NameError: name "x" is not defined significa:',opts:['x tem valor None','x é do tipo errado','A variável x não foi criada antes de ser usada','x é uma função, não variável'],a:2},
+       ]},
       {id:'m2l2',title:'Vocabulário de Machine Learning',en:'Machine Learning Vocabulary',
        content:'Machine learning tem vocabulário técnico específico que você vai encontrar em toda documentação, paper e tutorial. Feature e label são os dois conceitos mais fundamentais: feature é a entrada do modelo (o que você sabe), label é a saída (o que você quer prever). Training e testing são as duas fases principais. Overfitting significa que o modelo memorizou os dados de treino mas não generaliza. Underfitting significa que o modelo é simples demais. Toda documentação do Scikit-learn, PyTorch e Hugging Face usa esses termos sem tradução.',
        code:'# Vocabulário ML em código:\n\n# Dataset split — Divisão\nX_train, X_test = features[:80], features[80:]\ny_train, y_test = labels[:80], labels[80:]\n\n# Training — Treinamento\nmodel.fit(X_train, y_train)  # fit = treinar\n\n# Prediction — Predição\npredictions = model.predict(X_test)\n\n# Metrics — Métricas:\n# accuracy = acurácia (% corretos)\n# precision = dos positivos previstos, quantos eram?\n# recall = dos positivos reais, quantos encontrou?\n# loss = perda / erro do modelo\n# epoch = uma passagem completa pelo dataset',
        glossary:[['feature','característica / variável de entrada'],['label','rótulo / variável alvo'],['training set','conjunto de treino'],['test set','conjunto de teste'],['overfitting','sobreajuste (memoriza sem generalizar)'],['underfitting','subajuste (simples demais)'],['accuracy','acurácia / precisão global'],['loss','perda / erro'],['epoch','época (ciclo de treino)'],['inference','inferência (usar o modelo treinado)']],
-       exercise:'Pesquise em inglês o que é "bias-variance tradeoff" e escreva uma explicação de 3 parágrafos em português, usando os termos técnicos em inglês.'},
+       exercise:'Pesquise em inglês o que é "bias-variance tradeoff" e escreva uma explicação de 3 parágrafos em português, usando os termos técnicos em inglês.',
+       quiz:[
+         {q:'Em ML, o que é uma "feature"?',opts:['O resultado final do modelo','Uma variável de entrada usada para fazer previsões','O nome do algoritmo','Um tipo de erro'],a:1},
+         {q:'O que significa "overfitting"?',opts:['Modelo simples demais','Modelo que memorizou treino mas não generaliza','Falta de dados','Erro de programação'],a:1},
+         {q:'O que "model.fit(X_train, y_train)" faz?',opts:['Faz previsões','Avalia o modelo','Treina o modelo com os dados','Salva o modelo em disco'],a:2},
+         {q:'O que é "inference" em ML?',opts:['Treinar o modelo','Usar o modelo treinado para fazer previsões em dados novos','Avaliar hiperparâmetros','Limpar dados'],a:1},
+         {q:'O que é "epoch" no contexto de ML?',opts:['Um erro do modelo','Uma passagem completa pelo dataset de treino','Uma camada neural','Um hiperparâmetro fixo'],a:1},
+       ]},
       {id:'m2l3',title:'Lendo documentação técnica',en:'Reading Technical Documentation',
        content:'Saber ler documentação em inglês é uma das habilidades mais valiosas. A estrutura é sempre similar: Description (o que faz), Parameters (parâmetros de entrada com tipos), Returns (o que retorna), Examples (exemplos de uso), Notes/Warnings (avisos). Estratégia: 1) Leia o título e a primeira linha — entende 50% do que faz, 2) Vá direto para os Examples — código não mente, 3) Cheque os Parameters para entender customizações, 4) Leia os Notes para pegadinhas. Use Google Translate para palavras desconhecidas, mas tente ler sem traduzir.',
        code:'# Como ler a doc do Scikit-learn:\n# sklearn.ensemble.RandomForestClassifier\n#\n# "An ensemble of decision trees fitted on\n#  sub-samples of the dataset"\n# → Conjunto de árvores em sub-amostras\n#\n# Parameters:\n# n_estimators : int, default=100\n#   → número de árvores na floresta\n# max_depth : int, default=None\n#   → profundidade máxima das árvores\n# random_state : int, default=None\n#   → semente aleatória (reprodutibilidade)\n\nfrom sklearn.ensemble import RandomForestClassifier\nmodel = RandomForestClassifier(n_estimators=100, random_state=42)',
        glossary:[['deprecated','obsoleto (não use mais)'],['default','padrão / valor padrão'],['optional','opcional'],['required','obrigatório'],['returns','retorna'],['raises','lança (um erro)'],['see also','veja também'],['note','nota / observação'],['warning','aviso / cuidado']],
-       exercise:'Acesse a documentação do pandas (pandas.pydata.org/docs) e leia a página do método DataFrame.groupby(). Explique em português o que faz, com um exemplo prático.'},
+       exercise:'Acesse a documentação do pandas (pandas.pydata.org/docs) e leia a página do método DataFrame.groupby(). Explique em português o que faz, com um exemplo prático.',
+       quiz:[
+         {q:'Ao ler documentação técnica, onde você deve ir PRIMEIRO?',opts:['Notes e Warnings','Parameters detalhados','Examples (exemplos de código)','Source code'],a:2},
+         {q:'O que "optional" em parâmetros de função significa?',opts:['Obrigatório','Pode ou não ser fornecido — tem valor padrão','Experimental','Depreciado'],a:1},
+         {q:'O que "raises" em documentação indica?',opts:['O que a função retorna','Quais exceções a função pode lançar','Os parâmetros obrigatórios','A versão mínima do Python'],a:1},
+         {q:'O que "See also" em documentação sugere?',opts:['Que a função está depreciada','Links para funções relacionadas que podem ser úteis','Exemplos adicionais','Advertências de uso'],a:1},
+         {q:'Por que ler os "Notes" ao final da documentação?',opts:['São obrigatórios','Contêm pegadinhas, casos especiais e comportamentos não óbvios','São os exemplos principais','Listam os autores'],a:1},
+       ]},
       {id:'m2l4',title:'Comunicação técnica escrita',en:'Technical Writing',
        content:'Em um emprego de IA, você vai escrever: comentários no código, README de projetos, mensagens de commit no Git, relatórios técnicos. Em inglês, a comunicação técnica é direta e objetiva. Commits: use verbos no imperativo: "Add feature", "Fix bug", "Update model". READMEs: sempre inclua Installation, Usage e Examples. Comentários no código: explique o POR QUÊ, não o quê. Frases úteis: "As a result..." (como resultado), "In order to..." (para que...), "It is worth noting that..." (vale notar que...).',
        code:'# BONS comentários em inglês:\n\n# Bad (o que o código faz — óbvio):\nx = x * 1.1  # multiply x by 1.1\n\n# Good (por que fazemos isso):\nx = x * 1.1  # apply 10% annual inflation adjustment\n\n# Commit messages:\n# feat: add prediction endpoint to FastAPI\n# fix: correct data normalization bug\n# docs: update README with installation steps\n# refactor: simplify model evaluation function\n\n# README mínimo:\n# # Project Name\n# Brief description.\n# ## Installation\n# ## Usage\n# ## Examples',
        glossary:[['README','arquivo de documentação do projeto'],['commit message','mensagem de registro de mudança'],['refactor','refatorar (melhorar sem mudar função)'],['bug','erro / falha no código'],['feature','funcionalidade / recurso'],['release','versão lançada'],['issue','problema / tarefa reportada']],
-       exercise:'Escreva em inglês: 1) Um README de 10 linhas para o PredictOBD, 2) 3 mensagens de commit, 3) Um comentário explicando por que um cálculo específico é feito.'},
+       exercise:'Escreva em inglês: 1) Um README de 10 linhas para o PredictOBD, 2) 3 mensagens de commit, 3) Um comentário explicando por que um cálculo específico é feito.',
+       quiz:[
+         {q:'Qual é o formato correto de uma mensagem de commit?',opts:['"mudei o código"','"feat: add prediction endpoint to API"','"Update"','"fixed stuff 123"'],a:1},
+         {q:'Comentários no código devem explicar:',opts:['O que o código faz (óbvio pelo nome)','Por que o código faz aquilo (a razão não óbvia)','O histórico de mudanças','O nome do autor'],a:1},
+         {q:'O que deve obrigatoriamente ter em um README básico?',opts:['Apenas o nome do projeto','Description, Installation e Usage no mínimo','Lista de todos os commits','Diagrama de arquitetura'],a:1},
+         {q:'O prefixo "fix:" em mensagens de commit indica:',opts:['Nova funcionalidade','Correção de um bug','Refatoração','Atualização de documentação'],a:1},
+         {q:'Por que escrever documentação técnica em inglês mesmo sendo brasileiro?',opts:['Obrigação legal','Documentação em inglês tem maior alcance e é o padrão da indústria global','O Python exige inglês','Para impressionar recrutadores'],a:1},
+       ]},
     ],
     exam:[
       {q:'O que significa "index out of range" em Python?',opts:['Variável não definida','Você tentou acessar uma posição que não existe na lista','Erro de tipo','Loop infinito'],a:1},
@@ -313,22 +413,50 @@ const CURRICULUM = [
        content:'Vetores são listas de números. Matrizes são tabelas de números (linhas × colunas). Em IA, datasets são representados como matrizes: cada linha é uma amostra, cada coluna é uma feature. NumPy é a biblioteca padrão para operações numéricas em Python — muito mais rápida que listas Python puras. Shape é fundamental: (1000, 20) significa 1000 amostras com 20 features cada. Broadcasting permite operar arrays de formatos diferentes automaticamente.',
        code:'import numpy as np\n\n# Vetor — Vector\nv = np.array([1, 2, 3, 4])\nprint(v.shape)   # (4,)\n\n# Matriz — Matrix\nM = np.array([[1, 2, 3],[4, 5, 6]])\nprint(M.shape)   # (2, 3)\n\n# Operações\nprint(v * 2)         # [2, 4, 6, 8]\nprint(np.dot(v, v))  # 30 (produto escalar)\n\n# Dataset simulado\nX = np.random.rand(100, 5)  # 100 amostras, 5 features\nprint(X.shape)              # (100, 5)\nprint(X.mean(axis=0))       # média de cada coluna',
        glossary:[['vector','vetor'],['matrix','matriz'],['shape','formato / dimensões'],['dot product','produto escalar'],['element-wise','elemento a elemento'],['broadcasting','expansão automática de dimensões'],['transpose','transposta'],['axis','eixo (0=linhas, 1=colunas)']],
-       exercise:'Crie uma matriz NumPy 5×3 com números aleatórios. Calcule: a média de cada coluna, o valor máximo de cada linha, e a transposta da matriz.'},
+       exercise:'Crie uma matriz NumPy 5×3 com números aleatórios. Calcule: a média de cada coluna, o valor máximo de cada linha, e a transposta da matriz.',
+       quiz:[
+         {q:'O que np.array([1,2,3]).shape retorna?',opts:['[3]','(3,)','3','(1,3)'],a:1},
+         {q:'Em ML, o que cada linha de um dataset representa?',opts:['Uma feature','Uma amostra/exemplo','Um modelo','Uma coluna'],a:1},
+         {q:'O que faz np.dot(a, b) entre dois vetores?',opts:['Soma elemento a elemento','Produto escalar (um número)','Multiplica elemento a elemento','Concatena os vetores'],a:1},
+         {q:'O que axis=0 significa em np.mean(X, axis=0)?',opts:['Calcula a média de toda a matriz','Calcula a média de cada coluna','Calcula a média de cada linha','Calcula a variância'],a:1},
+         {q:'Por que NumPy é mais rápido que listas Python para cálculos?',opts:['Usa mais memória','Operações são feitas em C internamente e vetorizadas','É mais recente','Tem menos funcionalidades'],a:1},
+       ]},
       {id:'m3l2',title:'Estatística descritiva',en:'Descriptive Statistics',
        content:'Antes de treinar qualquer modelo, você precisa entender seus dados — isso é EDA (Exploratory Data Analysis). Medidas de tendência central: média (mean), mediana (median), moda (mode). Medidas de dispersão: variância (variance), desvio padrão (standard deviation). Distribuição normal: 68% dos dados estão a 1σ da média, 95% a 2σ. Correlação mede a relação linear entre duas variáveis: vai de -1 (inversa) a +1 (direta). Outliers são pontos extremos que podem distorcer o modelo.',
        code:'import numpy as np\n\nnotas = np.array([6.5, 7.0, 8.5, 9.0, 5.5, 7.5, 8.0, 6.0, 9.5, 7.0])\n\nprint(f"Média / Mean: {np.mean(notas):.2f}")\nprint(f"Mediana / Median: {np.median(notas):.2f}")\nprint(f"Desvio padrão / Std: {np.std(notas):.2f}")\nprint(f"Variância / Variance: {np.var(notas):.2f}")\nprint(f"Min-Max: {notas.min()} - {notas.max()}")\n\n# Correlação\nidade = np.array([20,22,25,21,19,23,24,20,26,22])\ncorr = np.corrcoef(notas, idade)[0,1]\nprint(f"Correlação: {corr:.2f}")',
        glossary:[['mean','média'],['median','mediana'],['standard deviation','desvio padrão'],['variance','variância'],['outlier','valor atípico'],['correlation','correlação'],['distribution','distribuição'],['EDA','Análise Exploratória de Dados']],
-       exercise:'Usando NumPy, analise um array de 50 números aleatórios: calcule todas as medidas estatísticas, identifique outliers (valores > média + 2*std).'},
+       exercise:'Usando NumPy, analise um array de 50 números aleatórios: calcule todas as medidas estatísticas, identifique outliers (valores > média + 2*std).',
+       quiz:[
+         {q:'O que desvio padrão baixo indica sobre os dados?',opts:['Muitos outliers','Os dados estão concentrados perto da média','A média é alta','Os dados são categóricos'],a:1},
+         {q:'Correlação de -0.9 entre duas variáveis indica:',opts:['Sem relação','Relação direta forte','Relação inversa forte','Correlação fraca'],a:2},
+         {q:'Qual medida é mais robusta a outliers: média ou mediana?',opts:['Média','Mediana','São equivalentes','Depende do tamanho do dataset'],a:1},
+         {q:'Em uma distribuição normal, 95% dos dados ficam a quantos desvios padrão da média?',opts:['1','2','3','4'],a:1},
+         {q:'O que EDA significa em ciência de dados?',opts:['Error Detection Algorithm','Exploratory Data Analysis — análise exploratória antes de modelar','External Data Access','Ensemble Decision Algorithm'],a:1},
+       ]},
       {id:'m3l3',title:'Probabilidade e Bayes',en:'Probability & Bayes',
        content:'Probabilidade é a base matemática de muitos algoritmos. P(A) = probabilidade do evento A acontecer (0 a 1). P(A|B) = probabilidade de A dado que B ocorreu. Teorema de Bayes: P(A|B) = P(B|A) × P(A) / P(B). Em ML: classificadores Naive Bayes usam isso para spam detection. A probabilidade a priori (prior) é o que você sabe antes de ver os dados. A posteriori (posterior) é o que você calcula após os dados. Distribuições importantes: Normal, Binomial, Poisson.',
        code:'import numpy as np\n\n# Probabilidade empírica — Empirical probability\nlancamentos = 10000\ndado = np.random.randint(1, 7, lancamentos)\nprob_6 = np.sum(dado == 6) / lancamentos\nprint(f"P(6) empírico: {prob_6:.3f}")  # ~0.167\n\n# Distribuição normal\nmu, sigma = 7.0, 1.5\namostras = np.random.normal(mu, sigma, 1000)\nprob_above_8 = np.mean(amostras > 8)\nprint(f"P(nota > 8): {prob_above_8:.3f}")\n\n# Teorema de Bayes\np_spam = 0.3\np_palavra_spam = 0.8\np_palavra = 0.4\np_spam_dado_palavra = (p_palavra_spam * p_spam) / p_palavra\nprint(f"P(spam|palavra): {p_spam_dado_palavra:.3f}")',
        glossary:[['probability','probabilidade'],['conditional probability','probabilidade condicional'],['prior','probabilidade a priori'],['posterior','probabilidade a posteriori'],['Bayes theorem','Teorema de Bayes'],['distribution','distribuição de probabilidade'],['expected value','valor esperado / média']],
-       exercise:'Implemente o Teorema de Bayes: dado que um teste tem 99% de precisão e a doença afeta 1% da população, qual a probabilidade de ter a doença se o teste der positivo?'},
+       exercise:'Implemente o Teorema de Bayes: dado que um teste tem 99% de precisão e a doença afeta 1% da população, qual a probabilidade de ter a doença se o teste der positivo?',
+       quiz:[
+         {q:'O que P(A|B) representa?',opts:['Probabilidade de A e B juntos','Probabilidade de A dado que B ocorreu','Probabilidade de A ou B','A divisão de P(A) por P(B)'],a:1},
+         {q:'P(A) = 0.0 significa que:',opts:['O evento é certo','O evento é impossível','50% de chance','Probabilidade desconhecida'],a:1},
+         {q:'O que é probabilidade a priori (prior) em Bayes?',opts:['A probabilidade calculada após ver os dados','O que você acredita antes de ver os dados','A probabilidade do evento acontecer duas vezes','A média das probabilidades'],a:1},
+         {q:'Naive Bayes é chamado de "naive" (ingênuo) porque:',opts:['É simples de implementar','Assume que todas as features são independentes entre si','Tem baixa acurácia','Foi criado antes do ML moderno'],a:1},
+         {q:'Se P(chuva) = 0.3 e P(molhado|chuva) = 0.9, o que P(molhado|chuva) × P(chuva) calcula?',opts:['P(chuva|molhado)','P(molhado e chuva) — probabilidade conjunta','P(molhado)','P(chuva e não molhado)'],a:1},
+       ]},
       {id:'m3l4',title:'Gradiente e otimização',en:'Gradient & Optimization',
        content:'O gradiente é a derivada multidimensional — indica a direção de maior crescimento de uma função. Em ML, queremos MINIMIZAR a função de perda (loss function), então andamos na direção OPOSTA ao gradiente. Isso é o Gradient Descent. Learning rate controla o tamanho dos passos: muito grande = ultrapassa o mínimo, muito pequeno = leva muito tempo. Variações: SGD (Stochastic), Adam, RMSprop — Adam é o mais usado em deep learning.',
        code:'import numpy as np\n\n# Minimizar f(x) = x² + 2x + 1 (mínimo em x=-1)\ndef f(x):\n    return x**2 + 2*x + 1\n\ndef gradiente(x):\n    return 2*x + 2\n\nx = 10.0\nlr = 0.1\nepochs = 50\n\nfor epoch in range(epochs):\n    grad = gradiente(x)\n    x = x - lr * grad\n    if epoch % 10 == 0:\n        print(f"Epoch {epoch}: x={x:.4f}, loss={f(x):.4f}")\n\nprint(f"Mínimo encontrado: x={x:.4f}")  # ~-1.0',
        glossary:[['gradient','gradiente (direção de maior variação)'],['gradient descent','descida do gradiente'],['learning rate','taxa de aprendizado'],['loss function','função de perda / erro'],['optimization','otimização'],['convergence','convergência'],['local minimum','mínimo local'],['global minimum','mínimo global'],['SGD','Stochastic Gradient Descent']],
-       exercise:'Implemente gradient descent para minimizar f(x,y) = x² + y². Experimente learning rates (0.001, 0.1, 0.5) e compare quantas épocas cada precisa para convergir.'},
+       exercise:'Implemente gradient descent para minimizar f(x,y) = x² + y². Experimente learning rates (0.001, 0.1, 0.5) e compare quantas épocas cada precisa para convergir.',
+       quiz:[
+         {q:'O gradiente aponta para a direção de maior _____ de uma função.',opts:['queda','crescimento','erro','convergência'],a:1},
+         {q:'Por que no gradient descent subtraímos o gradiente (e não somamos)?',opts:['Para ser mais rápido','Queremos minimizar a loss, então vamos na direção oposta ao crescimento','Por convenção matemática','Para evitar overflow'],a:1},
+         {q:'O que acontece com learning rate muito pequeno?',opts:['O modelo diverge','Convergência extremamente lenta — muitas épocas para chegar ao mínimo','Funciona perfeitamente','O modelo para de treinar'],a:1},
+         {q:'Adam optimizer é preferido em deep learning porque:',opts:['É mais simples','Adapta a learning rate por parâmetro e converge mais rápido na prática','Usa menos memória','Foi criado pela Anthropic'],a:1},
+         {q:'O que é um mínimo local no gradient descent?',opts:['O melhor ponto possível da função','Um ponto onde o gradiente é zero mas não é o menor valor global','O ponto de partida','O valor da loss function'],a:1},
+       ]},
     ],
     exam:[
       {q:'O que o .shape de um array NumPy representa?',opts:['O tipo dos dados','As dimensões do array (linhas × colunas)','O tamanho em bytes','A média dos valores'],a:1},
@@ -374,7 +502,14 @@ print(df[['nome', 'salario']])  # múltiplas colunas
 print(df.iloc[0])         # primeira linha (por posição)
 print(df.loc[0, 'nome'])  # valor específico`,
        glossary:[['DataFrame','tabela 2D com linhas e colunas'],['Series','coluna/array com índice'],['index','índice — identificador de cada linha'],['iloc','acesso por posição numérica'],['loc','acesso por rótulo/nome'],['shape','dimensões (linhas, colunas)'],['dtypes','tipo de dado de cada coluna'],['describe','resumo estatístico do DataFrame']],
-       exercise:'Crie um DataFrame com dados de 5 alunos (nome, nota_python, nota_matematica, aprovado). Acesse a coluna de notas de python, filtre os aprovados e imprima o resultado.'},
+       exercise:'Crie um DataFrame com dados de 5 alunos (nome, nota_python, nota_matematica, aprovado). Acesse a coluna de notas de python, filtre os aprovados e imprima o resultado.',
+       quiz:[
+         {q:'Qual a diferença entre Series e DataFrame?',opts:['São idênticos','Series é 1D (coluna), DataFrame é 2D (tabela)','DataFrame é mais lento','Series só aceita números'],a:1},
+         {q:'O que df.iloc[0] retorna?',opts:['A primeira coluna','A primeira linha (por posição numérica)','O índice do DataFrame','O tipo da primeira coluna'],a:1},
+         {q:'O que df.describe() mostra?',opts:['As primeiras linhas','Tipos de dados','Estatísticas: média, std, min, max, quartis','O índice do DataFrame'],a:2},
+         {q:'Como acessar múltiplas colunas num DataFrame?',opts:['df("col1","col2")','df["col1","col2"]','df[["col1","col2"]]','df.cols("col1","col2")'],a:2},
+         {q:'O que df.shape retorna?',opts:['O tipo dos dados','A tupla (linhas, colunas)','O tamanho em bytes','A lista de colunas'],a:1},
+       ]},
       {id:'m3bl2',title:'Leitura e escrita de arquivos',en:'Reading & Writing Files',
        content:'Em projetos reais de ML, os dados vêm de arquivos CSV, Excel, JSON ou bancos de dados. Pandas lê esses formatos com uma linha de código. read_csv é o mais usado — carrega um CSV direto em um DataFrame. Parâmetros importantes: sep (separador), encoding (para caracteres especiais), usecols (selecionar apenas colunas necessárias), nrows (limitar linhas para testar). Sempre inspecione o DataFrame logo após carregar: head(), info(), shape, isnull().sum().',
        code:`import pandas as pd
@@ -400,7 +535,14 @@ df.to_csv('resultado.csv', index=False)
 df.to_excel('resultado.xlsx', index=False)
 df.to_json('resultado.json', orient='records')`,
        glossary:[['read_csv','ler arquivo CSV para DataFrame'],['head()','primeiras N linhas'],['tail()','últimas N linhas'],['info()','tipos e contagem de não-nulos'],['isnull()','verificar valores ausentes'],['to_csv','salvar DataFrame como CSV'],['encoding','codificação de caracteres'],['sep','separador de colunas (vírgula, ponto-vírgula)']],
-       exercise:'Crie um CSV manualmente com 10 linhas de dados fictícios de vendas (data, produto, quantidade, valor). Carregue com pd.read_csv, faça a inspeção completa e salve como Excel.'},
+       exercise:'Crie um CSV manualmente com 10 linhas de dados fictícios de vendas (data, produto, quantidade, valor). Carregue com pd.read_csv, faça a inspeção completa e salve como Excel.',
+       quiz:[
+         {q:'Qual método mostra os tipos de dados e contagem de não-nulos de cada coluna?',opts:['df.describe()','df.types()','df.info()','df.summary()'],a:2},
+         {q:'O que df.isnull().sum() retorna?',opts:['O total de linhas','Contagem de valores nulos por coluna','True ou False por célula','O índice das linhas nulas'],a:1},
+         {q:'Como salvar um DataFrame sem o índice no CSV?',opts:['df.to_csv("f.csv")','df.to_csv("f.csv", index=False)','df.to_csv("f.csv", no_index=True)','df.save("f.csv")'],a:1},
+         {q:'Por que usar encoding="utf-8" ao ler um CSV?',opts:['Para ser mais rápido','Para garantir que caracteres especiais (ã, é, ç) sejam lidos corretamente','É obrigatório','Para compactar o arquivo'],a:1},
+         {q:'O que df.head(10) faz?',opts:['Mostra as últimas 10 linhas','Mostra as primeiras 10 linhas','Mostra 10 colunas','Filtra as 10 maiores linhas'],a:1},
+       ]},
       {id:'m3bl3',title:'Filtragem e seleção de dados',en:'Filtering & Selecting Data',
        content:'Filtrar dados é uma das operações mais frequentes em análise de dados. Em Pandas, você usa condições booleanas dentro de colchetes. Você pode combinar filtros com & (e) e | (ou) — sempre com parênteses em cada condição. query() é uma alternativa mais legível para filtros complexos. isin() filtra por lista de valores. between() filtra intervalos. A seleção eficiente de dados reduz memória e acelera o processamento.',
        code:`import pandas as pd
@@ -429,7 +571,14 @@ resumo = df[['nome', 'salario', 'area']]
 df_ordenado = df.sort_values('salario', ascending=False)
 print(df_ordenado.head())`,
        glossary:[['boolean indexing','filtragem por condição booleana'],['query()','filtrar com string de condição'],['isin()','filtrar por lista de valores'],['between()','filtrar por intervalo'],['sort_values()','ordenar por coluna'],['ascending','crescente (True) ou decrescente (False)'],['mask','máscara booleana para filtragem']],
-       exercise:'Com um DataFrame de vendas, filtre: 1) vendas acima de R$1000, 2) produtos específicos com isin(), 3) vendas em um intervalo de datas com between(). Combine dois filtros com &.'},
+       exercise:'Com um DataFrame de vendas, filtre: 1) vendas acima de R$1000, 2) produtos específicos com isin(), 3) vendas em um intervalo de datas com between(). Combine dois filtros com &.',
+       quiz:[
+         {q:'Como filtrar linhas onde a coluna "area" é igual a "TI" em Pandas?',opts:['df.filter(area="TI")','df[df["area"]=="TI"]','df.where("area","TI")','df.select(area=="TI")'],a:1},
+         {q:'Por que usar parênteses em cada condição ao combinar filtros com &?',opts:['Não é necessário','Por questão de estética','Para garantir a precedência correta dos operadores','Para melhorar performance'],a:2},
+         {q:'O que df.query("salario > 5000") faz?',opts:['Cria uma coluna nova','Filtra linhas onde salario > 5000','Ordena por salario','Calcula a média do salario'],a:1},
+         {q:'df["area"].isin(["TI","RH"]) filtra linhas onde:',opts:['area é diferente de TI e RH','area é exatamente "TI,RH"','area é TI ou RH','area começa com T ou R'],a:2},
+         {q:'Como ordenar um DataFrame pelo salário do maior para o menor?',opts:['df.order("salario")','df.sort_values("salario", ascending=False)','df.sort("salario", desc=True)','df.order_by("salario", "DESC")'],a:1},
+       ]},
       {id:'m3bl4',title:'Limpeza de dados',en:'Data Cleaning',
        content:'Dados sujos são a realidade — valores nulos, duplicados, tipos errados, espaços extras. A limpeza consome 60-80% do tempo em projetos reais de ML. Valores nulos (NaN): dropna() remove linhas/colunas com nulos, fillna() preenche com um valor. duplicated() e drop_duplicates() eliminam linhas repetidas. astype() converte tipos. str.strip() remove espaços. replace() substitui valores. A regra de ouro: entenda POR QUE o dado está nulo antes de decidir o que fazer.',
        code:`import pandas as pd
@@ -461,7 +610,14 @@ df['salario'] = pd.to_numeric(df['salario'], errors='coerce')
 # Limpar strings
 df['nome'] = df['nome'].str.strip().str.title()`,
        glossary:[['NaN','Not a Number — valor ausente'],['dropna()','remover linhas/colunas com nulos'],['fillna()','preencher valores nulos'],['drop_duplicates()','remover linhas duplicadas'],['astype()','converter tipo de coluna'],['to_numeric()','converter para número'],['str.strip()','remover espaços extras'],['errors=coerce','converter inválidos para NaN']],
-       exercise:'Crie um DataFrame com dados propositalmente sujos: nulos, duplicatas, colunas numéricas como string. Aplique todo o pipeline de limpeza e compare df.info() antes e depois.'},
+       exercise:'Crie um DataFrame com dados propositalmente sujos: nulos, duplicatas, colunas numéricas como string. Aplique todo o pipeline de limpeza e compare df.info() antes e depois.',
+       quiz:[
+         {q:'Qual método preenche valores NaN com a mediana de uma coluna?',opts:['df[col].fill(df[col].median())','df[col].fillna(df[col].median())','df[col].replace_null(median)','df[col].impute("median")'],a:1},
+         {q:'Por que usar mediana em vez de média para preencher nulos?',opts:['A mediana é sempre maior','A mediana é mais robusta a outliers','É mais fácil de calcular','Pandas só aceita mediana'],a:1},
+         {q:'O que pd.to_numeric(col, errors="coerce") faz com valores inválidos?',opts:['Gera um erro','Converte para string','Transforma em NaN','Ignora os valores'],a:2},
+         {q:'Antes de decidir o que fazer com nulos, você deve:',opts:['Sempre removê-los','Sempre preenchê-los com zero','Entender POR QUE o dado está nulo','Duplicar as linhas'],a:2},
+         {q:'O que drop_duplicates() mantém por padrão quando há linhas repetidas?',opts:['A última ocorrência','A primeira ocorrência','Todas as ocorrências','Remove todas as repetidas incluindo a primeira'],a:1},
+       ]},
       {id:'m3bl5',title:'GroupBy e agregações',en:'GroupBy & Aggregations',
        content:'GroupBy é uma das operações mais poderosas do Pandas — permite agrupar dados por uma ou mais colunas e aplicar funções de agregação. O padrão é: split (dividir em grupos) → apply (aplicar função) → combine (combinar resultados). Funções de agregação: sum, mean, count, min, max, std. agg() permite múltiplas funções ao mesmo tempo. pivot_table cria tabelas dinâmicas como no Excel. Em ML, GroupBy é fundamental para feature engineering — criar features como "média de vendas por cliente".',
        code:`import pandas as pd
@@ -492,7 +648,14 @@ tabela = df.pivot_table(
 )
 print(tabela)`,
        glossary:[['groupby()','agrupar dados por coluna(s)'],['agg()','aplicar múltiplas funções de agregação'],['reset_index()','transformar índice em coluna'],['pivot_table','tabela dinâmica'],['aggfunc','função de agregação'],['transform()','aplicar função mantendo o tamanho original'],['nunique()','contar valores únicos']],
-       exercise:'Com dados de vendas por cliente e produto, use GroupBy para calcular: total vendido por cliente, produto mais vendido por região, média de ticket por mês.'},
+       exercise:'Com dados de vendas por cliente e produto, use GroupBy para calcular: total vendido por cliente, produto mais vendido por região, média de ticket por mês.',
+       quiz:[
+         {q:'O que df.groupby("area")["salario"].mean() calcula?',opts:['A média geral do salario','A média do salario para cada valor único de area','O salario máximo por area','O total de funcionários por area'],a:1},
+         {q:'O que reset_index() faz após um groupby?',opts:['Reseta o DataFrame original','Transforma o índice agrupado de volta em coluna normal','Remove as linhas agrupadas','Reinicia a contagem do índice para 0'],a:1},
+         {q:'O que agg() permite fazer que .mean() sozinho não permite?',opts:['Agrupamentos mais rápidos','Aplicar múltiplas funções de agregação simultaneamente','Filtrar grupos','Ordenar os resultados'],a:1},
+         {q:'pivot_table é mais útil para:',opts:['Filtrar dados','Criar visualização de dados cruzados (linha × coluna × valor)','Limpar dados','Fazer joins'],a:1},
+         {q:'GroupBy em Pandas segue o padrão:',opts:['Load → Process → Save','Split → Apply → Combine','Filter → Sort → Group','Read → Clean → Export'],a:1},
+       ]},
       {id:'m3bl6',title:'Merge e Join de DataFrames',en:'Merge & Join DataFrames',
        content:'Combinar tabelas é essencial quando seus dados estão em múltiplas fontes — como em bancos de dados relacionais. pd.merge() é o equivalente ao JOIN do SQL. Tipos: inner (só registros em ambas), left (todos da esquerda), right (todos da direita), outer (todos de ambas). concat() empilha DataFrames verticalmente (como UNION no SQL). Sempre verifique o shape antes e depois do merge para garantir que não perdeu ou duplicou dados.',
        code:`import pandas as pd
@@ -521,7 +684,14 @@ print(f"Inner: {inner.shape}, Left: {left.shape}")
 # Concat — empilhar DataFrames
 df_total = pd.concat([clientes, clientes], ignore_index=True)`,
        glossary:[['merge()','combinar DataFrames por chave (como JOIN no SQL)'],['inner','apenas registros em ambas as tabelas'],['left join','todos da esquerda + correspondentes da direita'],['outer','todos de ambas as tabelas'],['concat()','empilhar DataFrames verticalmente'],['on','coluna de junção com mesmo nome'],['left_on/right_on','colunas de junção com nomes diferentes']],
-       exercise:'Crie 3 DataFrames: clientes, pedidos e produtos. Faça merges para criar um relatório completo com nome do cliente, produto e valor. Use left join e compare com inner join.'},
+       exercise:'Crie 3 DataFrames: clientes, pedidos e produtos. Faça merges para criar um relatório completo com nome do cliente, produto e valor. Use left join e compare com inner join.',
+       quiz:[
+         {q:'O que inner join em pd.merge() retorna?',opts:['Todos da esquerda','Todos de ambas as tabelas','Apenas registros com correspondência em AMBAS as tabelas','Apenas da direita'],a:2},
+         {q:'Se clientes tem 100 linhas e pedidos tem 300, um left join retorna quantas linhas no mínimo?',opts:['100','300','400','Depende das correspondências, mas pelo menos 100'],a:3},
+         {q:'Como usar pd.concat() corretamente para empilhar dois DataFrames?',opts:['pd.concat(df1, df2)','pd.concat([df1, df2], ignore_index=True)','df1.concat(df2)','pd.merge(df1, df2, how="concat")'],a:1},
+         {q:'Quando usar left_on e right_on em vez de on no pd.merge()?',opts:['Sempre','Nunca','Quando as colunas de junção têm nomes diferentes nas duas tabelas','Apenas em inner join'],a:2},
+         {q:'O que fazer sempre após um merge para verificar se ele está correto?',opts:['Nada, confiar no resultado','Comparar o shape antes e depois para garantir que não perdeu ou duplicou dados','Ordenar o DataFrame','Remover duplicatas automaticamente'],a:1},
+       ]},
     ],
     exam:[
       {q:'Qual a diferença entre Series e DataFrame no Pandas?',opts:['São a mesma coisa','Series é uma coluna (1D), DataFrame é uma tabela (2D)','DataFrame é mais lento','Series não aceita strings'],a:1},
@@ -579,7 +749,14 @@ plt.tight_layout()
 plt.savefig('graficos.png', dpi=150)
 plt.show()`,
        glossary:[['Figure','janela/canvas do gráfico'],['Axes','área de um gráfico individual'],['subplot','múltiplos gráficos em uma figura'],['figsize','tamanho da figura (largura, altura) em polegadas'],['dpi','resolução da imagem (dots per inch)'],['tight_layout','ajusta espaçamento automático'],['alpha','transparência (0=invisível, 1=opaco)'],['scatter','gráfico de dispersão (pontos)']],
-       exercise:'Crie uma figura com 4 subplots: linha do sin(x), scatter de notas vs horas de estudo, barras de 5 linguagens mais populares, histograma de 1000 valores normais.'},
+       exercise:'Crie uma figura com 4 subplots: linha do sin(x), scatter de notas vs horas de estudo, barras de 5 linguagens mais populares, histograma de 1000 valores normais.',
+       quiz:[
+         {q:'Qual a diferença entre Figure e Axes no Matplotlib?',opts:['São a mesma coisa','Figure é a janela; Axes é a área do gráfico individual','Axes é maior','Figure é para 3D'],a:1},
+         {q:'O que plt.subplots(2,2) cria?',opts:['Um gráfico 2×2 pixels','Uma grade de 4 gráficos em 2 linhas e 2 colunas','Dois gráficos side-by-side','Quatro figuras separadas'],a:1},
+         {q:'Para que serve plt.tight_layout()?',opts:['Aumentar resolução','Ajustar automaticamente o espaçamento entre subplots','Salvar o gráfico','Mudar o tema'],a:1},
+         {q:'Como salvar um gráfico em alta resolução para um relatório?',opts:['plt.save("img.png")','plt.savefig("img.png", dpi=300)','plt.export("img.png")','fig.save(300)'],a:1},
+         {q:'O parâmetro alpha=0.5 em scatter controla:',opts:['O tamanho dos pontos','A cor dos pontos','A transparência (50% opaco)','O número de pontos'],a:2},
+       ]},
       {id:'m3cl2',title:'Seaborn — visualização estatística',en:'Seaborn — Statistical Visualization',
        content:'Seaborn é construído sobre Matplotlib e especializado em visualizações estatísticas. O diferencial: integração nativa com DataFrames do Pandas e gráficos estatísticos prontos. boxplot mostra distribuição e outliers. violinplot combina boxplot com distribuição. heatmap é perfeito para correlações. pairplot cria matriz de scatter entre todas as colunas — essencial na EDA. countplot conta categorias. lmplot adiciona linha de regressão ao scatter.',
        code:`import seaborn as sns
@@ -615,7 +792,14 @@ axes[1,1].set_title('Conta vs Gorjeta')
 plt.tight_layout()
 plt.show()`,
        glossary:[['boxplot','caixa com mediana, quartis e outliers'],['violinplot','boxplot + distribuição de densidade'],['heatmap','mapa de calor (ótimo para correlações)'],['pairplot','matriz de scatter entre todas as colunas'],['kde','Kernel Density Estimation — curva de densidade'],['palette','paleta de cores'],['annot','mostrar valores dentro do heatmap'],['regplot','scatter com linha de regressão']],
-       exercise:'Carregue o dataset iris do seaborn (sns.load_dataset("iris")). Crie: 1) boxplot de petal_length por species, 2) heatmap de correlação, 3) pairplot completo colorido por species.'},
+       exercise:'Carregue o dataset iris do seaborn (sns.load_dataset("iris")). Crie: 1) boxplot de petal_length por species, 2) heatmap de correlação, 3) pairplot completo colorido por species.',
+       quiz:[
+         {q:'Por que Seaborn é preferido sobre Matplotlib puro para visualizações estatísticas?',opts:['É mais rápido','Integra nativamente com DataFrames Pandas e tem gráficos estatísticos prontos','Tem mais tipos de gráficos','É mais antigo'],a:1},
+         {q:'O que um boxplot mostra?',opts:['Apenas a média','Mediana, quartis, amplitude e outliers da distribuição','Apenas os outliers','A correlação entre variáveis'],a:1},
+         {q:'Para que serve um heatmap de correlação?',opts:['Mostrar distribuição individual','Visualizar a força e direção da correlação entre todas as variáveis numéricas','Mostrar tendência no tempo','Comparar grupos'],a:1},
+         {q:'O que kde=True adiciona ao histplot?',opts:['Uma segunda cor','Uma linha de densidade suavizada sobre o histograma','Mais barras','Escala logarítmica'],a:1},
+         {q:'sns.regplot() adiciona ao scatter:',opts:['Cores por categoria','Uma linha de regressão linear com intervalo de confiança','Um histograma sobreposto','Boxplots nos eixos'],a:1},
+       ]},
       {id:'m3cl3',title:'Visualizações para ML',en:'Visualizations for ML',
        content:'Em projetos de ML, certas visualizações são padrão da indústria: curva de aprendizado (learning curve) mostra overfitting/underfitting, confusion matrix visualiza onde o classificador erra, feature importance bar chart mostra quais variáveis importam, curva ROC avalia classificadores binários. Estas visualizações são o que você vai apresentar em relatórios técnicos e em entrevistas.',
        code:`import matplotlib.pyplot as plt
@@ -654,7 +838,14 @@ axes[1].set_xlabel('Importância')
 plt.tight_layout()
 plt.show()`,
        glossary:[['confusion matrix','matriz que mostra acertos e erros do classificador'],['feature importance','importância de cada variável para o modelo'],['learning curve','curva que mostra treino vs validação por época'],['ROC curve','tradeoff entre taxa de verdadeiros/falsos positivos'],['AUC','área sob a curva ROC'],['false positive','previu positivo mas era negativo'],['false negative','previu negativo mas era positivo']],
-       exercise:'Treine um RandomForest no dataset load_breast_cancer. Crie: 1) matriz de confusão, 2) top-10 features mais importantes, 3) curva ROC com AUC.'},
+       exercise:'Treine um RandomForest no dataset load_breast_cancer. Crie: 1) matriz de confusão, 2) top-10 features mais importantes, 3) curva ROC com AUC.',
+       quiz:[
+         {q:'O que a diagonal principal da confusion matrix representa?',opts:['Os erros do modelo','As previsões corretas','Os falsos positivos','Os dados de teste'],a:1},
+         {q:'Feature importance bar chart mostra:',opts:['A correlação entre features','A contribuição de cada variável para as decisões do modelo','A distribuição de cada feature','O tipo de cada feature'],a:1},
+         {q:'AUC-ROC = 1.0 significa:',opts:['Modelo igual ao aleatório','Modelo com 50% de acurácia','Modelo perfeito que separa completamente as classes','Overfitting total'],a:2},
+         {q:'A curva ROC plota:',opts:['Acurácia vs Loss','True Positive Rate vs False Positive Rate em diferentes thresholds','Precision vs Recall','Features vs Importância'],a:1},
+         {q:'Por que visualizações de ML são importantes em entrevistas?',opts:['Não são importantes','Mostram que você entende o comportamento do modelo além dos números','São obrigatórias por lei','Economizam tempo de cálculo'],a:1},
+       ]},
     ],
     exam:[
       {q:'Qual a diferença entre Figure e Axes no Matplotlib?',opts:['São iguais','Figure é a janela; Axes é a área de um gráfico individual','Figure é menor','Axes é para 3D'],a:1},
@@ -678,22 +869,50 @@ plt.show()`,
        content:'Scikit-learn (sklearn) é a biblioteca de ML mais usada em Python para modelos tradicionais. API consistente: todos os modelos seguem o mesmo padrão — instanciar, fit(), predict(). Cobre: classificação, regressão, clustering, preprocessamento. Sempre divida seus dados em treino e teste ANTES de qualquer preprocessamento — evita data leakage (vazamento de dados). random_state=42 garante reprodutibilidade dos resultados.',
        code:'from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.metrics import accuracy_score\n\niris = load_iris()\nX, y = iris.data, iris.target\nprint(f"Shape: {X.shape}")  # (150, 4)\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\nscaler = StandardScaler()\nX_train = scaler.fit_transform(X_train)  # aprende E transforma\nX_test = scaler.transform(X_test)         # só transforma\n\nmodel = KNeighborsClassifier(n_neighbors=3)\nmodel.fit(X_train, y_train)\n\nprevisoes = model.predict(X_test)\nprint(f"Acurácia: {accuracy_score(y_test, previsoes):.2%}")',
        glossary:[['train_test_split','divisão treino/teste'],['fit','treinar / ajustar'],['predict','prever / predizer'],['transform','transformar (preprocessar)'],['data leakage','vazamento de dados'],['random_state','semente aleatória'],['normalization','normalização dos dados']],
-       exercise:'Carregue o dataset load_breast_cancer do sklearn, faça train_test_split 80/20, normalize com StandardScaler e treine um KNN. Qual a acurácia?'},
+       exercise:'Carregue o dataset load_breast_cancer do sklearn, faça train_test_split 80/20, normalize com StandardScaler e treine um KNN. Qual a acurácia?',
+       quiz:[
+         {q:'Por que aplicar fit_transform() apenas nos dados de treino?',opts:['Para ser mais rápido','Para evitar data leakage — o scaler não deve ver os dados de teste','Por limitação do sklearn','Para economizar memória'],a:1},
+         {q:'O que random_state=42 garante?',opts:['Melhor performance','Reprodutibilidade — mesmos resultados em cada execução','Dados balanceados','Sem overfitting'],a:1},
+         {q:'Qual o fluxo correto no sklearn?',opts:['predict → fit → transform','fit → transform → predict','transform → fit → predict','fit_transform → predict → evaluate'],a:1},
+         {q:'O que train_test_split com test_size=0.2 faz?',opts:['20% treino, 80% teste','80% treino, 20% teste','Embaralha e divide igualmente','Cria 5 folds'],a:1},
+         {q:'Por que normalizar features antes de treinar KNN?',opts:['O KNN exige por lei','KNN usa distâncias — features em escalas diferentes distorcem o cálculo','Para aumentar acurácia em qualquer modelo','Por convenção do sklearn'],a:1},
+       ]},
       {id:'m4l2',title:'Regressão linear e logística',en:'Linear & Logistic Regression',
        content:'Regressão linear prediz valores contínuos (preço, temperatura). A linha y = mx + b é encontrada minimizando o MSE (Mean Squared Error). Regressão logística, apesar do nome, é um classificador — prediz probabilidades usando a função sigmoide. Métricas de regressão: MAE, MSE, RMSE, R². Métricas de classificação: accuracy, precision, recall, F1-score. Confusion matrix mostra onde o modelo erra. Regularização (L1=Lasso, L2=Ridge) previne overfitting.',
        code:'from sklearn.linear_model import LinearRegression, LogisticRegression\nfrom sklearn.metrics import mean_squared_error, r2_score, classification_report\nimport numpy as np\n\n# Regressão Linear\nX = np.array([[1],[2],[3],[4],[5],[6],[7],[8]])\ny = np.array([2.1, 3.9, 6.1, 7.9, 10.2, 12.1, 13.9, 16.1])\n\nreg = LinearRegression()\nreg.fit(X, y)\nprint(f"R²: {r2_score(y, reg.predict(X)):.3f}")\n\n# Regressão Logística\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split\n\ndata = load_breast_cancer()\nX_tr, X_te, y_tr, y_te = train_test_split(\n    data.data, data.target, test_size=0.2, random_state=42\n)\nclf = LogisticRegression(max_iter=1000)\nclf.fit(X_tr, y_tr)\nprint(classification_report(y_te, clf.predict(X_te)))',
        glossary:[['linear regression','regressão linear'],['logistic regression','regressão logística'],['MSE','Mean Squared Error — Erro Quadrático Médio'],['R²','coeficiente de determinação (0-1, melhor=1)'],['sigmoid','sigmoide (função S para probabilidades)'],['confusion matrix','matriz de confusão'],['precision','precisão'],['recall','revocação'],['F1-score','média harmônica de precision e recall'],['regularization','regularização']],
-       exercise:'Crie um dataset sintético com make_regression do sklearn, treine LinearRegression e Ridge (alpha=1.0). Compare MSE e R² de ambos.'},
+       exercise:'Crie um dataset sintético com make_regression do sklearn, treine LinearRegression e Ridge (alpha=1.0). Compare MSE e R² de ambos.',
+       quiz:[
+         {q:'Regressão logística é usada para:',opts:['Prever valores contínuos como preço','Classificar — prever a probabilidade de uma classe','Agrupar dados','Reduzir dimensionalidade'],a:1},
+         {q:'R² próximo de 1.0 em regressão linear indica:',opts:['Alta perda','Overfitting','O modelo explica bem a variância dos dados','Underfitting'],a:2},
+         {q:'O que regularização Ridge (L2) faz?',opts:['Remove features irrelevantes','Penaliza coeficientes grandes para reduzir overfitting','Aumenta a acurácia sempre','Remove dados outliers'],a:1},
+         {q:'MSE penaliza erros grandes mais que MAE porque:',opts:['É mais fácil de calcular','Eleva os erros ao quadrado, amplificando os maiores desvios','É a métrica padrão','Funciona melhor com outliers'],a:1},
+         {q:'A função sigmoide na regressão logística transforma qualquer número em:',opts:['Um inteiro','Um valor entre 0 e 1 (interpretável como probabilidade)','Um valor negativo','Um vetor'],a:1},
+       ]},
       {id:'m4l3',title:'Árvores de decisão e Random Forest',en:'Decision Trees & Random Forest',
        content:'Árvores de decisão tomam decisões sequenciais — como um fluxograma. São interpretáveis mas tendem ao overfitting. Random Forest é um ensemble de árvores — treina centenas em subamostras diferentes e combina as predições (bagging). O resultado é muito mais robusto. Feature importance mostra quais variáveis são mais relevantes — extremamente útil em negócios. Hiperparâmetros importantes: n_estimators, max_depth, min_samples_split.',
        code:'from sklearn.tree import DecisionTreeClassifier\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score\n\niris = load_iris()\nX_tr, X_te, y_tr, y_te = train_test_split(\n    iris.data, iris.target, test_size=0.2, random_state=42\n)\n\ntree = DecisionTreeClassifier(max_depth=3, random_state=42)\ntree.fit(X_tr, y_tr)\nprint(f"Árvore: {accuracy_score(y_te, tree.predict(X_te)):.2%}")\n\nrf = RandomForestClassifier(n_estimators=100, random_state=42)\nrf.fit(X_tr, y_tr)\nprint(f"Random Forest: {accuracy_score(y_te, rf.predict(X_te)):.2%}")\n\nfor name, imp in zip(iris.feature_names, rf.feature_importances_):\n    print(f"{name}: {imp:.3f}")',
        glossary:[['decision tree','árvore de decisão'],['random forest','floresta aleatória'],['ensemble','conjunto de modelos'],['bagging','treinar em subamostras aleatórias'],['feature importance','importância das variáveis'],['n_estimators','número de árvores'],['max_depth','profundidade máxima'],['pruning','poda da árvore']],
-       exercise:'No dataset load_wine do sklearn, compare Decision Tree e Random Forest. Use feature_importances_ para identificar os 3 ingredientes mais importantes para classificar o vinho.'},
+       exercise:'No dataset load_wine do sklearn, compare Decision Tree e Random Forest. Use feature_importances_ para identificar os 3 ingredientes mais importantes para classificar o vinho.',
+       quiz:[
+         {q:'Por que Random Forest é mais robusto que uma única Decision Tree?',opts:['Usa mais memória','Combina previsões de várias árvores treinadas em subamostras aleatórias','É mais simples de interpretar','Treina mais rápido'],a:1},
+         {q:'O que bagging faz no Random Forest?',opts:['Remove features irrelevantes','Treina cada árvore em uma subamostra aleatória com reposição','Poda as árvores','Combina regressão com classificação'],a:1},
+         {q:'max_depth em Decision Tree controla:',opts:['O número de árvores','A profundidade máxima da árvore — limita overfitting','O número de features','O tamanho do dataset'],a:1},
+         {q:'Feature importances no Random Forest somam:',opts:['100','1.0','Depende do número de features','O número de nós'],a:1},
+         {q:'Uma Decision Tree com max_depth=None tende a:',opts:['Underfitting','Overfitting — memoriza os dados de treino completamente','Performance ótima','Treinamento mais lento'],a:1},
+       ]},
       {id:'m4l4',title:'Validação cruzada e métricas avançadas',en:'Cross-validation & Advanced Metrics',
        content:'Cross-validation divide os dados em k partes (folds), treina em k-1 e testa em 1, repetindo k vezes — estimativa mais confiável da performance real. GridSearchCV automatiza a busca pelo melhor conjunto de hiperparâmetros. Para dados desbalanceados (ex: 95% negativos), acurácia de 95% é enganosa — use ROC-AUC, F1, precision-recall. Curva ROC mostra o tradeoff entre true positive rate e false positive rate. AUC = área sob a curva ROC (1.0 = perfeito).',
        code:'from sklearn.model_selection import cross_val_score, GridSearchCV\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import load_breast_cancer\n\ndata = load_breast_cancer()\nX, y = data.data, data.target\n\n# Cross-validation\nmodel = RandomForestClassifier(random_state=42)\nscores = cross_val_score(model, X, y, cv=5, scoring="accuracy")\nprint(f"CV Accuracy: {scores.mean():.3f} ± {scores.std():.3f}")\n\n# GridSearchCV\nparam_grid = {\n    "n_estimators": [50, 100, 200],\n    "max_depth": [None, 5, 10]\n}\ngrid = GridSearchCV(RandomForestClassifier(random_state=42),\n                    param_grid, cv=5, scoring="roc_auc")\ngrid.fit(X, y)\nprint(f"Melhores params: {grid.best_params_}")\nprint(f"Melhor AUC: {grid.best_score_:.3f}")',
        glossary:[['cross-validation','validação cruzada'],['k-fold','divisão em k partes'],['GridSearchCV','busca em grade de hiperparâmetros'],['hyperparameter','hiperparâmetro (configuração do modelo)'],['ROC curve','curva ROC'],['AUC','Area Under Curve'],['imbalanced dataset','dataset desbalanceado']],
-       exercise:'Use GridSearchCV para encontrar os melhores hiperparâmetros do Random Forest no dataset load_digits. Busque: n_estimators=[50,100], max_depth=[5,10,None]. Reporte o melhor AUC.'},
+       exercise:'Use GridSearchCV para encontrar os melhores hiperparâmetros do Random Forest no dataset load_digits. Busque: n_estimators=[50,100], max_depth=[5,10,None]. Reporte o melhor AUC.',
+       quiz:[
+         {q:'O que cross_val_score com cv=5 faz?',opts:['Divide os dados em 5% treino e 95% teste','Treina e avalia 5 vezes em partes diferentes e retorna 5 scores','Cria 5 modelos diferentes','Avalia 5 métricas ao mesmo tempo'],a:1},
+         {q:'Por que cross-validation é mais confiável que um único train_test_split?',opts:['É mais rápido','Avalia o modelo em múltiplas divisões diferentes, reduzindo variância da estimativa','Sempre dá acurácia maior','Exige menos dados'],a:1},
+         {q:'Em datasets desbalanceados (ex: 95% negativo), qual métrica NÃO deve ser a principal?',opts:['AUC-ROC','F1-score','Acurácia simples','Precision'],a:2},
+         {q:'GridSearchCV com cv=5 e param_grid de 9 combinações treina quantos modelos?',opts:['9','45','14','5'],a:1},
+         {q:'AUC-ROC de 0.5 indica:',opts:['Modelo perfeito','Modelo pior que aleatório','Modelo equivalente a escolha aleatória','50% de acurácia'],a:2},
+       ]},
     ],
     exam:[
       {q:'Por que normalizar apenas com fit_transform nos dados de TREINO?',opts:['Para deixar o modelo mais rápido','Para evitar data leakage','Por limitação do sklearn','Para economizar memória'],a:1},
@@ -717,22 +936,50 @@ plt.show()`,
        content:'LLMs (Large Language Models) são redes neurais treinadas em enormes quantidades de texto para prever o próximo token. Emergem capacidades surpreendentes: raciocínio, código, tradução. Tokens: LLMs processam tokens (~4 caracteres em média), não palavras. 1000 tokens ≈ 750 palavras. Temperatura controla a criatividade: 0 = determinístico, 1 = criativo. Context window é o limite de texto que o modelo "lembra". Modelos populares: Claude (Anthropic), GPT-4 (OpenAI), Gemini (Google), LLaMA (Meta).',
        code:'# Conceitos de LLM em pseudocódigo\n\n# Tokenização\n# "machine learning" → ["machine", " learn", "ing"]\n# "inteligência" → ["intel", "ig", "ência"]\n\n# Temperatura\n# temperature=0.0 → determinístico, consistente\n# temperature=0.7 → equilíbrio (recomendado)\n# temperature=1.0 → mais criativo / variado\n# temperature=1.5 → muito criativo / incoerente\n\n# Context window\n# claude-sonnet: 200k tokens (~150k palavras!)\n# Tudo conta: system prompt + histórico + resposta\n\n# Custo\n# Cobrado por token de entrada + saída\n# Seja específico mas conciso para economizar',
        glossary:[['LLM','Large Language Model — Modelo de Linguagem Grande'],['token','unidade de texto (~4 chars) processada pelo modelo'],['temperature','temperatura (criatividade/aleatoriedade)'],['context window','janela de contexto (memória da conversa)'],['prompt','instrução/texto de entrada'],['completion','resposta gerada pelo modelo'],['fine-tuning','ajuste fino do modelo'],['embedding','representação vetorial de texto'],['inference','uso do modelo para gerar respostas']],
-       exercise:'Acesse claude.ai e teste o mesmo prompt com 3 abordagens: 1) direto e curto, 2) com contexto detalhado, 3) com exemplos. Compare as respostas e anote as diferenças.'},
+       exercise:'Acesse claude.ai e teste o mesmo prompt com 3 abordagens: 1) direto e curto, 2) com contexto detalhado, 3) com exemplos. Compare as respostas e anote as diferenças.',
+       quiz:[
+         {q:'O que é um "token" para um LLM?',opts:['Uma senha de acesso','Unidade básica de texto processada (~4 caracteres)','Um tipo de modelo','Uma requisição à API'],a:1},
+         {q:'Temperatura=0 em um LLM gera respostas:',opts:['Mais criativas e variadas','Determinísticas e consistentes','Mais longas','Com mais erros'],a:1},
+         {q:'O que é "context window" (janela de contexto)?',opts:['A janela do navegador','O limite máximo de tokens que o modelo processa de uma vez','A memória de longo prazo','O histórico de conversas salvo'],a:1},
+         {q:'Por que LLMs às vezes "alucinam"?',opts:['Falta de memória RAM','Geram texto probabilisticamente, podendo inventar fatos com confiança','Bug de programação','Temperatura muito alta sempre'],a:1},
+         {q:'1000 tokens equivalem aproximadamente a:',opts:['100 palavras','750 palavras','2000 palavras','50 palavras'],a:1},
+       ]},
       {id:'m5l2',title:'API da Anthropic — Claude',en:'Anthropic Claude API',
        content:'A API da Anthropic permite integrar Claude em qualquer aplicação Python. Você precisa de uma API key — crie em console.anthropic.com. Instale: pip install anthropic. O cliente usa o padrão messages: lista de dicionários com role (user/assistant) e content (texto). system prompt define o comportamento do assistente. Boas práticas: NUNCA coloque a API key no código — use variáveis de ambiente (os.environ). Controle custos com max_tokens.',
        code:'import anthropic\nimport os\n\nclient = anthropic.Anthropic(\n    api_key=os.environ["ANTHROPIC_API_KEY"]  # nunca hardcode!\n)\n\n# Chamada simples\nmessage = client.messages.create(\n    model="claude-haiku-4-5",\n    max_tokens=1024,\n    system="Você é um assistente de dados. Responda em português.",\n    messages=[\n        {"role": "user",\n         "content": "Explique overfitting em 2 parágrafos."}\n    ]\n)\nprint(message.content[0].text)\n\n# Conversa multi-turn\nhistorico = []\n\ndef chat(mensagem_usuario):\n    historico.append({"role":"user","content":mensagem_usuario})\n    resp = client.messages.create(\n        model="claude-haiku-4-5",\n        max_tokens=512,\n        messages=historico\n    )\n    resposta = resp.content[0].text\n    historico.append({"role":"assistant","content":resposta})\n    return resposta',
        glossary:[['API key','chave de acesso à API (mantenha secreta)'],['system prompt','instrução de comportamento do assistente'],['messages','histórico de mensagens da conversa'],['max_tokens','máximo de tokens na resposta'],['role','papel: user ou assistant'],['environment variable','variável de ambiente'],['rate limit','limite de requisições por minuto']],
-       exercise:'Crie um script Python que usa a API do Claude para: 1) analisar um texto e extrair 5 pontos principais, 2) gerar um resumo em inglês, 3) traduzir de volta ao português.'},
+       exercise:'Crie um script Python que usa a API do Claude para: 1) analisar um texto e extrair 5 pontos principais, 2) gerar um resumo em inglês, 3) traduzir de volta ao português.',
+       quiz:[
+         {q:'Como deve ser armazenada a API key da Anthropic?',opts:['Direto no código Python','Em variável de ambiente (os.environ)','Em um arquivo README','No GitHub público'],a:1},
+         {q:'O que o parâmetro max_tokens controla na API?',opts:['O tempo máximo de resposta','O número máximo de tokens na resposta gerada','O número de requisições por minuto','O custo máximo'],a:1},
+         {q:'O que é o "system prompt" na API da Anthropic?',opts:['A senha de acesso','Instrução que define o comportamento e persona do assistente','O modelo a ser usado','O idioma da resposta'],a:1},
+         {q:'Para uma conversa multi-turn com a API, você deve:',opts:['Criar um novo cliente a cada mensagem','Manter o histórico de mensagens e enviar sempre o histórico completo','Salvar o estado em banco de dados','Usar streaming obrigatoriamente'],a:1},
+         {q:'Qual modelo Claude é mais indicado para tarefas simples e baratas?',opts:['claude-opus-4-8','claude-sonnet-4-6','claude-haiku-4-5','Todos têm o mesmo custo'],a:2},
+       ]},
       {id:'m5l3',title:'Prompt engineering avançado',en:'Advanced Prompt Engineering',
        content:'Prompt engineering é a arte de instruir LLMs para obter melhores resultados. Técnicas: Zero-shot (sem exemplos), Few-shot (com exemplos), Chain-of-thought (peça para pensar passo a passo). Estrutura de um bom prompt: 1) Contexto, 2) Tarefa clara, 3) Formato de saída, 4) Restrições, 5) Exemplos. XML tags ajudam a estruturar prompts complexos. Evite ambiguidade — LLMs interpretam o que você escreve, não o que quis dizer. Teste e itere.',
        code:'# Zero-shot\nprompt_zero = """Classifique o sentimento como POSITIVO, NEGATIVO ou NEUTRO.\nTexto: "O produto chegou rápido mas veio danificado."\nSentimento:"""\n\n# Few-shot com exemplos\nprompt_few = """Classifique o sentimento:\nTexto: "Ótimo produto!" → POSITIVO\nTexto: "Muito ruim." → NEGATIVO\nTexto: "O produto chegou." → NEUTRO\nTexto: "Chegou rápido mas danificado." → """\n\n# Chain-of-thought\nprompt_cot = """Resolva pensando passo a passo:\nUm trem parte às 14h e chega às 18h30.\nQuantas horas de viagem?\nPense:\n1. Horário de partida:\n2. Horário de chegada:\n3. Diferença:\n4. Resposta:"""\n\n# Structured output — JSON\nprompt_json = """Extraia dados do texto. Retorne APENAS JSON:\n{"nome": str, "empresa": str, "cargo": str}\nTexto: "João Silva é Gerente de TI na ABC LTDA."""',
        glossary:[['zero-shot','sem exemplos no prompt'],['few-shot','com exemplos no prompt'],['chain-of-thought','raciocínio passo a passo'],['system prompt','instrução de comportamento'],['structured output','saída estruturada (JSON, XML)'],['hallucination','alucinação — modelo inventa informações falsas'],['grounding','ancoragem em fatos/documentos reais']],
-       exercise:'Crie 3 versões de um prompt para extrair informações de currículos. Use: 1) zero-shot, 2) few-shot com 2 exemplos, 3) chain-of-thought. Compare os resultados.'},
+       exercise:'Crie 3 versões de um prompt para extrair informações de currículos. Use: 1) zero-shot, 2) few-shot com 2 exemplos, 3) chain-of-thought. Compare os resultados.',
+       quiz:[
+         {q:'O que é few-shot prompting?',opts:['Usar poucos tokens no prompt','Fornecer exemplos no prompt para guiar o modelo','Chamar a API poucas vezes','Um modelo de IA pequeno'],a:1},
+         {q:'Chain-of-thought prompting pede ao modelo para:',opts:['Responder em uma palavra','Usar JSON','Raciocinar passo a passo antes de responder','Traduzir o texto'],a:2},
+         {q:'Para obter saída estruturada (JSON) de um LLM, você deve:',opts:['Só é possível com fine-tuning','Pedir explicitamente no prompt e especificar o schema desejado','Usar sempre temperatura=0','Chamar a API duas vezes'],a:1},
+         {q:'O que é grounding em LLMs?',opts:['Treinar o modelo do zero','Ancorar as respostas em documentos/fatos reais para reduzir alucinações','Uma técnica de fine-tuning','O processo de tokenização'],a:1},
+         {q:'Por que XML tags ajudam em prompts complexos?',opts:['O modelo processa XML mais rápido','Delimitam claramente as seções do prompt, reduzindo ambiguidade','São obrigatórias na API','Economizam tokens'],a:1},
+       ]},
       {id:'m5l4',title:'Construindo aplicação com LLM',en:'Building LLM Application',
        content:'Uma aplicação real com LLM tem: 1) Interface (CLI, API REST, ou web), 2) Gerenciamento de contexto, 3) Processamento de entrada, 4) Chamada ao LLM com retry, 5) Processamento de saída. FastAPI é ideal para criar endpoints REST que chamam LLMs. RAG (Retrieval-Augmented Generation) combina busca em documentos com geração — permite que o modelo "saiba" sobre seus dados específicos sem fine-tuning.',
        code:'from fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel\nimport anthropic\nimport os\n\napp = FastAPI()\nclient = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])\n\nclass AnaliseRequest(BaseModel):\n    texto: str\n\nclass AnaliseResponse(BaseModel):\n    resumo: str\n    sentimento: str\n    pontos_chave: list[str]\n\n@app.post("/analisar", response_model=AnaliseResponse)\nasync def analisar_texto(req: AnaliseRequest):\n    prompt = f"""Analise o texto e retorne JSON:\n{{"resumo": "1 frase", "sentimento": "POSITIVO/NEGATIVO/NEUTRO",\n "pontos_chave": ["ponto1", "ponto2", "ponto3"]}}\nTexto: {req.texto}\nRetorne APENAS JSON válido."""\n    \n    try:\n        msg = client.messages.create(\n            model="claude-haiku-4-5", max_tokens=512,\n            messages=[{"role":"user","content":prompt}]\n        )\n        import json\n        dados = json.loads(msg.content[0].text)\n        return AnaliseResponse(**dados)\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=str(e))',
        glossary:[['FastAPI','framework Python para APIs REST'],['endpoint','ponto de acesso da API'],['RAG','Retrieval-Augmented Generation'],['LangChain','framework para orquestrar LLMs'],['pydantic','biblioteca de validação de dados'],['async/await','programação assíncrona'],['retry','tentar novamente em falha'],['vector database','banco de dados para embeddings']],
-       exercise:'Crie uma API FastAPI com endpoint POST /resumir que recebe um texto, chama o Claude para resumir em 3 bullet points, e retorna JSON estruturado. Teste com curl.'},
+       exercise:'Crie uma API FastAPI com endpoint POST /resumir que recebe um texto, chama o Claude para resumir em 3 bullet points, e retorna JSON estruturado. Teste com curl.',
+       quiz:[
+         {q:'O que é RAG (Retrieval-Augmented Generation)?',opts:['Um tipo de modelo','Técnica que busca documentos relevantes e os passa ao LLM para respostas fundamentadas','Um framework Python','Uma métrica de avaliação'],a:1},
+         {q:'Pydantic em FastAPI serve para:',opts:['Criar banco de dados','Validar e serializar dados de entrada e saída automaticamente','Autenticar usuários','Fazer deploy'],a:1},
+         {q:'Por que implementar retry na chamada à API do LLM?',opts:['Para economizar tokens','APIs podem ter falhas temporárias — retry evita que seu app quebre por instabilidade','Para melhorar a qualidade','É obrigatório pela Anthropic'],a:1},
+         {q:'O decorator @app.post("/endpoint") no FastAPI define:',opts:['Um middleware','Uma rota que aceita requisições POST nesse path','Uma variável global','Um modelo de ML'],a:1},
+         {q:'async/await em FastAPI permite:',opts:['Execução mais lenta','Tratar múltiplas requisições simultaneamente sem bloquear o servidor','Melhor integração com ML','Validação automática'],a:1},
+       ]},
     ],
     exam:[
       {q:'O que é um "token" para um LLM?',opts:['Uma senha de acesso','Unidade básica de texto processada (~4 chars)','Um tipo de modelo','Uma requisição à API'],a:1},
@@ -756,22 +1003,50 @@ plt.show()`,
        content:'Git é o sistema de controle de versão mais usado no mundo. Commit é um snapshot do código. Branch permite trabalhar em funcionalidades sem afetar o código principal. Merge une branches. Fluxo básico: git add → git commit → git push. .gitignore lista arquivos que não devem ser versionados (senhas, ambientes virtuais, dados grandes). README.md é a porta de entrada do seu projeto. GitHub Actions automatiza testes e deploy.',
        code:'# Configuração inicial\ngit config --global user.name "Frederico"\ngit config --global user.email "seu@email.com"\n\n# Ciclo diário\ngit status                   # ver mudanças\ngit add .                    # adicionar tudo\ngit commit -m "feat: add preprocessing pipeline"\ngit push origin main\n\n# Branches\ngit checkout -b feature/novo-modelo  # criar e mudar\ngit checkout main                    # voltar\ngit merge feature/novo-modelo        # unir\n\n# .gitignore essencial para ML:\n# __pycache__/\n# .env\n# venv/\n# *.pkl\n# data/raw/',
        glossary:[['commit','salvar snapshot do código'],['branch','ramo / versão paralela'],['.gitignore','arquivo que lista o que NÃO versionar'],['push','enviar commits ao remoto'],['pull','baixar atualizações'],['clone','copiar repositório'],['fork','cópia de repositório alheio']],
-       exercise:'Crie um repositório no GitHub para seus estudos de IA. Adicione: README.md, .gitignore para Python/ML, e uma pasta notebooks/ com um notebook de exemplo.'},
+       exercise:'Crie um repositório no GitHub para seus estudos de IA. Adicione: README.md, .gitignore para Python/ML, e uma pasta notebooks/ com um notebook de exemplo.',
+       quiz:[
+         {q:'O que git commit faz?',opts:['Envia código ao GitHub','Salva um snapshot das mudanças no repositório local','Cria uma nova branch','Mescla branches'],a:1},
+         {q:'O que deve estar no .gitignore de um projeto ML?',opts:['O código Python principal','Arquivos .env, /venv, dados brutos grandes e arquivos .pkl','O README','O requirements.txt'],a:1},
+         {q:'Qual a sequência correta para enviar mudanças ao GitHub?',opts:['push → commit → add','add → push → commit','add → commit → push','commit → add → push'],a:2},
+         {q:'O que git branch -b feature/novo faz?',opts:['Deleta a branch','Cria e muda para a nova branch "feature/novo"','Lista as branches','Faz merge da branch'],a:1},
+         {q:'Por que usar branches em vez de commitar direto na main?',opts:['É obrigatório','Permite desenvolver features/fixes em isolamento sem afetar o código principal','Para fazer backup','Para economizar espaço'],a:1},
+       ]},
       {id:'m6l2',title:'Docker para ML',en:'Docker for ML',
        content:'Docker empacota seu código, dependências e ambiente em um container — garantindo que funciona em qualquer máquina. Dockerfile descreve como construir a imagem. Por que usar em ML: reprodutibilidade (mesmo ambiente em dev e prod), isolamento (sem conflito de versões), portabilidade (roda em qualquer cloud). docker-compose orquestra múltiplos containers. Volumes permitem que dados persistam. Expose ports para acessar serviços externamente.',
        code:'# Dockerfile para aplicação ML\nFROM python:3.11-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nEXPOSE 8000\n\nCMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]\n\n# requirements.txt:\n# fastapi==0.104.1\n# uvicorn==0.24.0\n# scikit-learn==1.3.2\n# anthropic==0.8.0\n# numpy==1.26.2\n\n# Comandos:\n# docker build -t meu-app-ml .\n# docker run -p 8000:8000 -e ANTHROPIC_API_KEY=... meu-app-ml',
        glossary:[['container','ambiente isolado com tudo que o app precisa'],['image','template para criar containers'],['Dockerfile','receita de como construir a imagem'],['docker-compose','orquestrar múltiplos containers'],['volume','armazenamento persistente'],['port mapping','mapear porta do container para o host'],['layer','camada da imagem Docker']],
-       exercise:'Containerize a API FastAPI do módulo anterior. Crie Dockerfile e requirements.txt, build a imagem, rode e teste com curl http://localhost:8000/docs.'},
+       exercise:'Containerize a API FastAPI do módulo anterior. Crie Dockerfile e requirements.txt, build a imagem, rode e teste com curl http://localhost:8000/docs.',
+       quiz:[
+         {q:'O que é um container Docker?',opts:['Uma máquina virtual completa','Ambiente isolado e portátil com código + dependências + runtime','Apenas um arquivo ZIP','Um serviço de cloud'],a:1},
+         {q:'Qual a diferença entre imagem e container Docker?',opts:['São iguais','Imagem é o template (receita); container é a instância rodando','Container é maior','Imagem só roda na nuvem'],a:1},
+         {q:'O que "EXPOSE 8000" no Dockerfile faz?',opts:['Abre a porta 8000 publicamente na internet','Documenta que o container usa a porta 8000 (não abre automaticamente)','Inicia o servidor na porta 8000','Conecta ao banco de dados'],a:1},
+         {q:'Por que Docker garante reprodutibilidade em ML?',opts:['Comprime o modelo','O mesmo ambiente (SO, Python, bibliotecas) é usado em dev e produção','É mais rápido que venv','Substitui o requirements.txt'],a:1},
+         {q:'O comando para rodar um container mapeando a porta 8000 é:',opts:['docker start -p 8000','docker run -p 8000:8000 minha-imagem','docker exec -port 8000 minha-imagem','docker build --port 8000'],a:1},
+       ]},
       {id:'m6l3',title:'Deploy no Hugging Face Spaces',en:'Deploy on Hugging Face Spaces',
        content:'Hugging Face Spaces é a plataforma gratuita mais fácil para fazer deploy de demos de ML. Suporta Gradio (interfaces interativas), Streamlit (dashboards), e Docker (APIs). Gradio cria interfaces web com poucas linhas de código. Para deploy: crie conta em huggingface.co, crie um Space, faça upload do código. Para projetos sérios: AWS (SageMaker, Lambda), GCP (Vertex AI, Cloud Run), Azure. Serverless é ideal para APIs com tráfego irregular.',
        code:'import gradio as gr\nimport anthropic\nimport os\n\nclient = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])\n\ndef analisar_texto(texto):\n    if not texto.strip():\n        return "Por favor, insira um texto."\n    \n    resp = client.messages.create(\n        model="claude-haiku-4-5",\n        max_tokens=256,\n        messages=[{\n            "role": "user",\n            "content": f"Analise o sentimento em 1 frase: {texto}"\n        }]\n    )\n    return resp.content[0].text\n\ninterface = gr.Interface(\n    fn=analisar_texto,\n    inputs=gr.Textbox(label="Texto", lines=3),\n    outputs=gr.Textbox(label="Análise"),\n    title="Análise de Sentimento com Claude"\n)\n\ninterface.launch()',
        glossary:[['Hugging Face Spaces','plataforma gratuita de deploy de demos ML'],['Gradio','biblioteca para interfaces web de ML'],['Streamlit','framework para dashboards Python'],['serverless','sem servidor fixo — executa sob demanda'],['Cloud Run','serviço GCP para containers serverless'],['Lambda','serviço AWS para funções serverless'],['CI/CD','Integração e Deploy Contínuos']],
-       exercise:'Faça deploy de um Space no Hugging Face com Gradio que usa o Claude para receber texto em português e retornar tradução para inglês com explicação.'},
+       exercise:'Faça deploy de um Space no Hugging Face com Gradio que usa o Claude para receber texto em português e retornar tradução para inglês com explicação.',
+       quiz:[
+         {q:'Para que serve o Hugging Face Spaces?',opts:['Treinar modelos grandes','Fazer deploy gratuito de demos e apps de ML com Gradio ou Streamlit','Armazenar datasets','Comprar GPUs'],a:1},
+         {q:'Gradio cria interfaces web para ML com:',opts:['Muito código HTML/CSS/JS','Poucas linhas Python — ideal para demos rápidos','Apenas para modelos de imagem','Somente em notebooks Jupyter'],a:1},
+         {q:'O que é "serverless" no contexto de deploy?',opts:['Sem servidor de banco de dados','Sem servidor fixo — executa sob demanda e escala automaticamente','Sem backend','Sem autenticação'],a:1},
+         {q:'Para deploy em produção de uma API de ML, qual opção é mais robusta?',opts:['Hugging Face Spaces','Docker + Cloud Run (GCP) ou Lambda (AWS)','Um notebook Jupyter compartilhado','Arquivo HTML estático'],a:1},
+         {q:'CI/CD em MLOps significa:',opts:['Continuous Intelligence / Continuous Data','Continuous Integration / Continuous Deployment — automatizar testes e deploy','Container Interface / Cloud Deploy','Nenhuma das alternativas'],a:1},
+       ]},
       {id:'m6l4',title:'Monitoramento e MLOps básico',en:'Monitoring & Basic MLOps',
        content:'MLOps é a prática de colocar e manter modelos de ML em produção de forma confiável. Model drift: com o tempo os dados mudam e o modelo fica desatualizado — monitore e retreine. Logging é essencial para diagnóstico. MLflow rastreia experimentos: parâmetros testados, melhor performance, versão dos modelos. Model registry guarda e versiona modelos prontos para produção. Health check endpoint (/health) para monitoramento automático.',
        code:'import mlflow\nimport mlflow.sklearn\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score\nimport logging\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\ndata = load_iris()\nX_tr, X_te, y_tr, y_te = train_test_split(\n    data.data, data.target, test_size=0.2, random_state=42\n)\n\nwith mlflow.start_run():\n    n_estimators = 100\n    mlflow.log_param("n_estimators", n_estimators)\n    \n    model = RandomForestClassifier(n_estimators=n_estimators, random_state=42)\n    model.fit(X_tr, y_tr)\n    \n    acc = accuracy_score(y_te, model.predict(X_te))\n    mlflow.log_metric("accuracy", acc)\n    mlflow.sklearn.log_model(model, "model")\n    logger.info(f"Acurácia: {acc:.3f}")\n\nprint("mlflow ui → acesse localhost:5000")',
        glossary:[['MLOps','ML Operations — práticas de produção de ML'],['model drift','degradação do modelo com mudanças nos dados'],['logging','registro de eventos do sistema'],['MLflow','plataforma de rastreamento de experimentos'],['model registry','registro/versionamento de modelos'],['health check','endpoint que verifica se o serviço funciona'],['latency','latência — tempo de resposta'],['A/B testing','comparar duas versões do modelo com usuários']],
-       exercise:'Configure MLflow no seu projeto e rastreie 5 experimentos variando hiperparâmetros do Random Forest. Compare na UI do MLflow (localhost:5000) e identifique o melhor modelo.'},
+       exercise:'Configure MLflow no seu projeto e rastreie 5 experimentos variando hiperparâmetros do Random Forest. Compare na UI do MLflow (localhost:5000) e identifique o melhor modelo.',
+       quiz:[
+         {q:'O que é model drift?',opts:['Bug no modelo','Degradação da performance ao longo do tempo por mudanças nos dados do mundo real','Overfitting em produção','Modelo muito grande'],a:1},
+         {q:'Para que serve o MLflow?',opts:['Fazer deploy de modelos','Rastrear experimentos, parâmetros, métricas e versões de modelos','Criar APIs REST','Visualizar dados'],a:1},
+         {q:'O que um health check endpoint (/health) faz?',opts:['Verifica a saúde do modelo ML','Confirma que o serviço está respondendo — usado por monitoramento automático','Faz backup dos dados','Autentica usuários'],a:1},
+         {q:'Por que monitorar latência em APIs de ML em produção?',opts:['Para calcular o custo','Latência alta impacta experiência do usuário e pode indicar problemas de infraestrutura','É obrigatório por lei','Para treinar o modelo mais rápido'],a:1},
+         {q:'O que model registry faz no MLflow?',opts:['Registra usuários','Armazena e versiona modelos prontos para produção com metadados','Faz deploy automático','Monitora a API'],a:1},
+       ]},
     ],
     exam:[
       {q:'O que é o comando "git commit"?',opts:['Enviar código ao GitHub','Salvar um snapshot das mudanças localmente','Criar uma branch','Mesclar branches'],a:1},
@@ -795,22 +1070,50 @@ plt.show()`,
        content:'Seu projeto final deve ser relevante para sua área de atuação. Um bom projeto de portfólio tem: 1) Problema real e bem definido, 2) Dataset real (ou muito realista), 3) Pipeline completo (EDA → modelo → API → deploy), 4) Documentação clara em inglês, 5) Resultado mensurável. Ideias para o seu contexto: Predição de falhas em veículos (dados OBD do PredictOBD), Classificação de leads por probabilidade de conversão (VantCRM), Detecção de anomalias em dados de motor.',
        code:'"""\nPROJETO: Predição de Manutenção Preventiva de Frotas\nPROBLEMA: Prever quando um veículo precisará de manutenção\n          baseado em dados OBD-II\n\nDATASET:\n- Features: temperatura_motor, rpm, velocidade, carga\n- Target: manutencao_necessaria (0/1)\n\nPIPELINE:\n1. EDA (Exploratory Data Analysis)\n2. Feature engineering\n3. Treinamento (Random Forest + XGBoost)\n4. Avaliação (ROC-AUC, F1)\n5. API FastAPI\n6. Deploy Hugging Face Spaces\n7. README completo em inglês\n\nMÉTRICAS DE SUCESSO:\n- AUC-ROC > 0.85\n- F1-score > 0.80\n- API com latência < 500ms\n"""\nprint("Planejamento aprovado!")',
        glossary:[['portfolio','portfólio — conjunto de projetos demonstrados'],['pipeline','sequência de etapas do projeto'],['end-to-end','ponta a ponta — do dado bruto ao deploy'],['feature engineering','criar/transformar variáveis'],['MVP','Minimum Viable Product — versão mínima funcional'],['benchmark','referência de comparação de performance']],
-       exercise:'Defina SEU projeto final em inglês: 1) Problema que resolve, 2) Dataset que usará, 3) Features e target, 4) Métricas de sucesso, 5) Stack técnica.'},
+       exercise:'Defina SEU projeto final em inglês: 1) Problema que resolve, 2) Dataset que usará, 3) Features e target, 4) Métricas de sucesso, 5) Stack técnica.',
+       quiz:[
+         {q:'O que torna um projeto de portfólio forte para AI Engineer?',opts:['Usar muitas bibliotecas diferentes','Pipeline completo: problema real → dados → modelo → API → deploy + documentação','Ter muitas linhas de código','Usar o algoritmo mais complexo disponível'],a:1},
+         {q:'Por que definir métricas de sucesso ANTES de começar o projeto?',opts:['É exigência acadêmica','Para saber quando parar e como avaliar se o projeto atingiu o objetivo','Para impressionar recrutadores','Para escolher o algoritmo'],a:1},
+         {q:'O que é um MVP (Minimum Viable Product) em ML?',opts:['Um modelo com 100% de acurácia','A versão mínima funcional que resolve o problema core — pode ser melhorada depois','Um modelo sem deploy','O modelo mais simples possível'],a:1},
+         {q:'Feature engineering é importante porque:',opts:['Acelera o treinamento','Features bem construídas frequentemente têm mais impacto que o algoritmo escolhido','É obrigatório no sklearn','Reduz o tamanho do dataset'],a:1},
+         {q:'Qual a melhor fonte de dados para um projeto de frota/veículos para seu contexto?',opts:['Datasets genéricos do Kaggle','Dados OBD-II reais de veículos — mais relevantes e com problema real a resolver','Dados sintéticos gerados aleatoriamente','Dados de redes sociais'],a:1},
+       ]},
       {id:'m7l2',title:'Desenvolvimento e documentação',en:'Development & Documentation',
        content:'Organize seu projeto seguindo a estrutura padrão da indústria. Desenvolva em notebooks primeiro (exploração) e depois migre para scripts .py (produção). Escreva testes unitários com pytest. Docstrings em inglês em todas as funções. Type hints tornam o código mais profissional. Versione com Git desde o início. O README é seu cartão de visitas — deve explicar o problema, a solução, como rodar e os resultados.',
        code:'# Estrutura profissional:\n# meu-projeto-ml/\n# ├── README.md\n# ├── requirements.txt\n# ├── .gitignore\n# ├── data/\n# │   ├── raw/\n# │   └── processed/\n# ├── notebooks/\n# │   ├── 01_eda.ipynb\n# │   └── 02_modeling.ipynb\n# ├── src/\n# │   ├── preprocessing.py\n# │   ├── train.py\n# │   └── evaluate.py\n# ├── api/\n# │   └── main.py\n# └── tests/\n#     └── test_preprocessing.py\n\ndef calculate_fleet_risk(obd_data: dict) -> float:\n    """Calculate maintenance risk score.\n    \n    Args:\n        obd_data: OBD-II sensor readings dict.\n    Returns:\n        Risk score 0.0 (low) to 1.0 (high).\n    """\n    return 0.0',
        glossary:[['type hints','anotações de tipo em Python'],['pytest','framework de testes em Python'],['unit test','teste unitário'],['docstring','documentação de função/classe'],['modular code','código dividido em funções reutilizáveis'],['refactoring','refatoração — melhorar estrutura sem mudar comportamento']],
-       exercise:'Estruture seu projeto com a estrutura mostrada. Crie os arquivos base, escreva o README em inglês e faça o primeiro commit no GitHub.'},
+       exercise:'Estruture seu projeto com a estrutura mostrada. Crie os arquivos base, escreva o README em inglês e faça o primeiro commit no GitHub.',
+       quiz:[
+         {q:'Por que separar notebooks/ e src/ em um projeto ML profissional?',opts:['Não há motivo','Notebooks são para exploração; src/ contém código de produção testável e reutilizável','O sklearn exige essa estrutura','Para facilitar o Docker'],a:1},
+         {q:'Type hints em Python servem para:',opts:['São obrigatórios no Python 3.10+','Melhorar legibilidade e permitir que IDEs detectem erros de tipo antes de rodar','Acelerar a execução','Substituir testes unitários'],a:1},
+         {q:'O que pytest faz em um projeto ML?',opts:['Treina o modelo mais rápido','Executa testes automatizados para garantir que funções retornam o esperado','Faz deploy automático','Avalia métricas do modelo'],a:1},
+         {q:'Uma docstring em inglês deve descrever:',opts:['O histórico de mudanças','O que a função faz, seus parâmetros e o que retorna','O nome do autor','O número de linhas'],a:1},
+         {q:'Por que fazer git commit desde o início do projeto?',opts:['É obrigatório no GitHub','Permite rastrear evolução, reverter bugs e mostrar histórico de trabalho','Para salvar no cloud','Para fazer deploy automático'],a:1},
+       ]},
       {id:'m7l3',title:'Apresentação e entrevistas técnicas',en:'Presentation & Technical Interviews',
        content:'Em entrevistas de IA Engineering você vai enfrentar: 1) Perguntas técnicas sobre algoritmos, 2) Code challenges, 3) System design (projete um sistema de ML), 4) Behavioral questions. Ao apresentar seu projeto: comece pelo problema (por que importa?), depois pela solução, depois pelos resultados, e deixe o código para o final. Frases úteis: "Walk me through your approach" = me explique sua abordagem. "How does this scale?" = como escala?',
        code:'# Perguntas comuns em entrevistas ML:\n\n# 1. "What is the bias-variance tradeoff?"\n#    Bias alto → underfitting (modelo simples)\n#    Variance alta → overfitting (muito sensível ao ruído)\n#    Goal: encontrar equilíbrio\n\n# 2. "How do you handle imbalanced datasets?"\n#    - Oversample (SMOTE)\n#    - Undersample\n#    - Ajustar class_weight\n#    - Usar métricas: F1, AUC\n\n# 3. "Explain Random Forest"\n#    - N árvores em subamostras aleatórias\n#    - Cada árvore vê subset de features\n#    - Voto majoritário das N árvores\n\n# 4. "How would you deploy a ML model?"\n#    pickle/joblib → FastAPI → Docker → Cloud',
        glossary:[['technical interview','entrevista técnica'],['code challenge','desafio de código ao vivo'],['system design','projeto de arquitetura de sistema'],['behavioral question','pergunta situacional'],['walk me through','me explique passo a passo'],['scalability','escalabilidade'],['production-ready','pronto para produção']],
-       exercise:'Grave um vídeo de 5 minutos em inglês apresentando seu projeto final como se fosse para um recrutador. Cubra: problema, solução, resultados e próximos passos.'},
+       exercise:'Grave um vídeo de 5 minutos em inglês apresentando seu projeto final como se fosse para um recrutador. Cubra: problema, solução, resultados e próximos passos.',
+       quiz:[
+         {q:'Ao apresentar um projeto de ML, o que deve vir PRIMEIRO?',opts:['O código fonte','O problema que resolve e por que ele importa','As métricas de performance','A stack tecnológica utilizada'],a:1},
+         {q:'"Walk me through your approach" significa:',opts:['Mostre o código','Me explique seu raciocínio e processo passo a passo','Apresente apenas os resultados','Liste as tecnologias usadas'],a:1},
+         {q:'Como responder "How does this scale?" em entrevista técnica?',opts:['Dizer que não sabe','Explicar como a arquitetura (Docker, cloud, auto-scaling) suporta crescimento de volume','Mostrar a acurácia do modelo','Falar sobre o tamanho do dataset de treino'],a:1},
+         {q:'O que é "system design" em entrevistas de ML Engineer?',opts:['Criar o UI do sistema','Projetar a arquitetura completa: dados → modelo → API → infra → monitoramento','Apresentar o código','Fazer um quiz técnico'],a:1},
+         {q:'Por que gravar um vídeo da apresentação antes da entrevista?',opts:['É obrigatório','Praticar melhora a clareza, identifica lacunas e reduz nervosismo na hora real','Para postar no LinkedIn','Para testar o microfone'],a:1},
+       ]},
       {id:'m7l4',title:'Publicando e continuando',en:'Publishing & Continuing',
        content:'Depois do projeto final, você tem a base para entrar no mercado. Próximos passos: 1) Contribuir para projetos open source (comece com documentação), 2) Kaggle para praticar, 3) Escrever artigos técnicos (Medium, LinkedIn), 4) Networking: PyData, Meetups de IA, Discord de ML, 5) Deep learning com PyTorch, 6) LLM fine-tuning e embeddings avançados. No Brasil: Pizza de Dados, AI Brazil. Salários de AI Engineer: R$8k–25k/mês dependendo do nível.',
        code:'# Roadmap pós-conclusão:\n\n# NÍVEL JUNIOR (você agora):\n# ✓ Python avançado\n# ✓ ML com Scikit-learn\n# ✓ APIs com FastAPI\n# ✓ LLMs e Prompt Engineering\n# ✓ Docker e Deploy\n# ✓ Git e GitHub\n\n# NÍVEL PLENO (próximos 12-18 meses):\n# → Deep Learning com PyTorch\n# → Fine-tuning de LLMs (LoRA, PEFT)\n# → Embeddings e bancos vetoriais\n# → Kubernetes básico\n\n# NÍVEL SENIOR (2-3 anos):\n# → Arquitetura de sistemas ML em escala\n# → MLOps avançado (Kubeflow, Airflow)\n# → Liderança técnica\n\n# Recursos:\n# fast.ai, cs231n.stanford.edu, d2l.ai',
        glossary:[['open source','código aberto'],['Kaggle','plataforma de competições de ML'],['PyTorch','framework de deep learning'],['fine-tuning','ajuste fino de modelo pré-treinado'],['embeddings','representações vetoriais'],['transformer','arquitetura usada em LLMs'],['LoRA','Low-Rank Adaptation — fine-tuning eficiente'],['Kubernetes','orquestrador de containers em escala']],
-       exercise:'Publique seu projeto no GitHub com README completo em inglês. Escreva um post no LinkedIn apresentando o que você construiu, o que aprendeu e o link do repositório.'},
+       exercise:'Publique seu projeto no GitHub com README completo em inglês. Escreva um post no LinkedIn apresentando o que você construiu, o que aprendeu e o link do repositório.',
+       quiz:[
+         {q:'O que é LoRA no contexto de LLMs?',opts:['Um framework de deploy','Método eficiente de fine-tuning que treina apenas matrizes de baixo rank','Um tipo de tokenização','Uma métrica de avaliação'],a:1},
+         {q:'Contribuir para projetos open source é recomendado porque:',opts:['Você ganha dinheiro','Aumenta visibilidade, habilidade técnica e networking real com a comunidade','É obrigatório para conseguir emprego','Substitui projetos próprios'],a:1},
+         {q:'Kaggle é útil para AI Engineers porque:',opts:['Paga salário','Oferece datasets reais, competições com feedback imediato e comunidade ativa','É o único lugar para aprender ML','Substitui experiência profissional'],a:1},
+         {q:'Qual é o próximo passo natural após dominar Scikit-learn?',opts:['Voltar para Python básico','Deep Learning com PyTorch — redes neurais e arquiteturas modernas','Aprender JavaScript','Focar apenas em APIs de LLM'],a:1},
+         {q:'Um post no LinkedIn sobre seu projeto deve focar em:',opts:['Listar todas as tecnologias','O problema resolvido, aprendizados e o impacto — não apenas as ferramentas usadas','Apenas o código','As dificuldades que você teve'],a:1},
+       ]},
     ],
     exam:[
       {q:'O que torna um projeto de portfólio forte?',opts:['Usar muitas tecnologias','Pipeline completo: problema real → dados → modelo → API → deploy + documentação','Ter muitos arquivos','Usar o algoritmo mais complexo'],a:1},
@@ -830,11 +1133,13 @@ plt.show()`,
 let state = JSON.parse(localStorage.getItem('aieng_state') || 'null') || {
   completed: {},
   examHistory: [],
+  lessonQuizHistory: {},
   studyDays: [],
   currentModule: null,
   totalMinutes: 0
 };
 if(!state.totalMinutes) state.totalMinutes = 0;
+if(!state.lessonQuizHistory) state.lessonQuizHistory = {};
 
 let _timerInterval = null;
 let _timerStart = null;
@@ -1008,6 +1313,7 @@ function renderLesson(l,i,mod){
         <div class="glossary">${l.glossary.map(([en,pt])=>`<div class="glos-item"><span class="glos-en">${en}</span><span class="glos-pt">→ ${pt}</span></div>`).join('')}</div>
         <h4>🎯 Exercício do dia</h4>
         <div class="exercise-box"><strong>Desafio:</strong> ${l.exercise}</div>
+        ${l.quiz ? renderLessonQuiz(l.id, l.quiz) : ''}
       </div>
     </div>
     <button class="lesson-toggle" onclick="toggleDetail('${l.id}')">Ver conteúdo ▼</button>
@@ -1131,6 +1437,77 @@ function renderHistory(){
       </div>
       <button class="btn btn-secondary" onclick="startExam('${e.modId}')" style="flex-shrink:0">Refazer</button>
     </div>`).join('');
+}
+
+function renderLessonQuiz(lid, quiz){
+  const prev = state.lessonQuizHistory[lid];
+  const badgeHtml = prev
+    ? `<span class="quiz-badge ${prev.passed?'pass':'fail'}">${prev.passed?'✓':'✗'} ${prev.score}%</span>`
+    : '';
+  return `<div class="quiz-box" id="quiz-${lid}">
+    <h4>🧪 Mini-prova da aula ${badgeHtml}</h4>
+    ${quiz.map((q,qi)=>`
+      <div class="quiz-q" id="qq-${lid}-${qi}">
+        <p>${qi+1}. ${q.q}</p>
+        <div class="opts">
+          ${q.opts.map((o,oi)=>`
+            <button class="quiz-opt${prev?getOptClass(prev,qi,oi,q.a):''}"
+              onclick="selectQuizOpt('${lid}',${qi},${oi},this)"
+              ${prev?'disabled':''}>${o}</button>
+          `).join('')}
+        </div>
+      </div>
+    `).join('')}
+    ${prev
+      ? `<div class="quiz-score ${prev.passed?'pass':'fail'}">${prev.passed?'✅':'❌'} ${prev.score}% — ${prev.correct}/${quiz.length} corretas
+         <button class="btn btn-secondary" style="margin-left:12px;padding:4px 12px;font-size:11px" onclick="resetLessonQuiz('${lid}')">Refazer</button></div>`
+      : `<button class="btn btn-primary" style="margin-top:10px;width:100%" onclick="submitLessonQuiz('${lid}')">Enviar respostas</button>`
+    }
+  </div>`;
+}
+
+function getOptClass(prev, qi, oi, correct){
+  if(prev.answers[qi]===oi && oi===correct) return ' correct';
+  if(prev.answers[qi]===oi && oi!==correct) return ' wrong';
+  if(oi===correct) return ' correct';
+  return '';
+}
+
+const _quizAnswers = {};
+
+function selectQuizOpt(lid, qi, oi, btn){
+  if(!_quizAnswers[lid]) _quizAnswers[lid] = {};
+  _quizAnswers[lid][qi] = oi;
+  const block = btn.closest('.quiz-q');
+  block.querySelectorAll('.quiz-opt').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function submitLessonQuiz(lid){
+  const lesson = CURRICULUM.flatMap(m=>m.lessons).find(l=>l.id===lid);
+  if(!lesson || !lesson.quiz) return;
+  const answers = _quizAnswers[lid] || {};
+  if(Object.keys(answers).length < lesson.quiz.length){
+    showToast('⚠️ Responda todas as perguntas!'); return;
+  }
+  let correct = 0;
+  lesson.quiz.forEach((q,qi)=>{ if(answers[qi]===q.a) correct++; });
+  const score = Math.round(correct/lesson.quiz.length*100);
+  state.lessonQuizHistory[lid] = { score, correct, total: lesson.quiz.length, passed: score>=60, answers };
+  saveState();
+  const box = document.getElementById('quiz-'+lid);
+  if(box) box.outerHTML = renderLessonQuiz(lid, lesson.quiz);
+  showToast(score>=60 ? '✅ Mini-prova concluída! '+score+'%' : '❌ '+score+'% — tente novamente após revisar');
+}
+
+function resetLessonQuiz(lid){
+  delete state.lessonQuizHistory[lid];
+  delete _quizAnswers[lid];
+  saveState();
+  const lesson = CURRICULUM.flatMap(m=>m.lessons).find(l=>l.id===lid);
+  if(!lesson || !lesson.quiz) return;
+  const box = document.getElementById('quiz-'+lid);
+  if(box) box.outerHTML = renderLessonQuiz(lid, lesson.quiz);
 }
 
 function showToast(msg){
